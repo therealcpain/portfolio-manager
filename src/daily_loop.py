@@ -17,6 +17,7 @@ Advisory only — no live trading.
 from __future__ import annotations
 
 import json
+import os
 import sys
 import time
 from dataclasses import asdict, dataclass, field
@@ -26,6 +27,16 @@ from typing import Any, Optional
 
 ROOT_DIR = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT_DIR / "src"))
+
+# Load .env so ANTHROPIC_API_KEY and FRED_API_KEY are available
+_env_path = ROOT_DIR / ".env"
+if _env_path.exists():
+    for _line in _env_path.read_text().splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith("#") and "=" in _line:
+            _k, _v = _line.split("=", 1)
+            if _v.strip():  # only set non-empty values
+                os.environ[_k.strip()] = _v.strip()
 
 DISCLAIMER = (
     "ADVISORY ONLY. All outputs are advisory model recommendations requiring human review. "
@@ -251,9 +262,17 @@ def _safe_phase(name: str, fn, skip: bool = False) -> tuple[PhaseResult, Any]:
         ), None
 
 
-def _load_macro_snapshot() -> dict:
-    """Load manual macro snapshot YAML if present."""
+def _load_macro_snapshot(auto_fetch: bool = True) -> dict:
+    """Load macro snapshot YAML, auto-fetching fresh data if requested."""
     path = ROOT_DIR / "data" / "manual_inputs" / "macro_snapshot.yaml"
+
+    if auto_fetch:
+        try:
+            from macro_fetcher import fetch_macro_snapshot
+            fetch_macro_snapshot(write=True)
+        except Exception:
+            pass  # fall through to cached file
+
     if not path.exists():
         return {}
     try:
@@ -302,15 +321,15 @@ INGEST_TICKERS = {
 
 def _run_ingest(cfg: DailyLoopConfig) -> IngestResult:
     """
-    Phase 1: fetch market data.
+    Phase 1: fetch market data via macro_fetcher (live) or mock stubs.
 
-    In mock mode returns plausible placeholder values so the rest of
-    the loop can run without network access.
+    Live mode auto-fetches prices, yields, CPI, FRED macro, and writes
+    macro_snapshot.yaml before reading it back. Mock mode skips network calls.
     """
     today_str = cfg.resolved_date()
-    macro = _load_macro_snapshot()
 
     if cfg.mock:
+        macro = _load_macro_snapshot(auto_fetch=False)
         prices = {
             "SPY": 525.0, "QQQ": 445.0, "BTC": 65000.0, "ETH": 3200.0,
             "GLD": 230.0, "MSTR": 1400.0, "URNM": 38.0, "NVDA": 890.0,
@@ -323,38 +342,19 @@ def _run_ingest(cfg: DailyLoopConfig) -> IngestResult:
         ytd = {k: 12.0 for k in prices}
         source = "mock"
     else:
-        from data_loader import get_current_price, get_price_series
-        from datetime import timedelta
-
-        today = date.fromisoformat(today_str)
-        start_ytd = today.replace(month=1, day=1)
-        start_20d = today - timedelta(days=28)
-
-        prices: dict[str, float] = {}
-        r1: dict[str, float] = {}
-        r5: dict[str, float] = {}
-        r20: dict[str, float] = {}
-        ytd: dict[str, float] = {}
-
-        for name, yf_ticker in INGEST_TICKERS.items():
-            try:
-                prices[name] = get_current_price(yf_ticker)
-                series = get_price_series(yf_ticker, start=start_ytd, end=today)
-                if len(series) >= 2:
-                    r1[name] = round((series.iloc[-1] / series.iloc[-2] - 1) * 100, 2)
-                if len(series) >= 6:
-                    r5[name] = round((series.iloc[-1] / series.iloc[-6] - 1) * 100, 2)
-                series_20d = get_price_series(yf_ticker, start=start_20d, end=today)
-                if len(series_20d) >= 2:
-                    r20[name] = round((series_20d.iloc[-1] / series_20d.iloc[0] - 1) * 100, 2)
-                ytd[name] = round((series.iloc[-1] / series.iloc[0] - 1) * 100, 2)
-            except Exception:
-                prices.setdefault(name, 0.0)
-                r1.setdefault(name, 0.0)
-                r5.setdefault(name, 0.0)
-                r20.setdefault(name, 0.0)
-                ytd.setdefault(name, 0.0)
-        source = "yfinance"
+        # Auto-fetch all data and write macro_snapshot.yaml
+        macro = _load_macro_snapshot(auto_fetch=True)
+        # Pull prices + returns from the freshly-written snapshot
+        prices = macro.get("market", {})
+        # Supplement with full ticker list from snapshot prices section
+        snap_prices = macro.get("prices", {})
+        if snap_prices:
+            prices = snap_prices
+        r1  = macro.get("returns_1d", {})
+        r5  = macro.get("returns_5d", {})
+        r20 = macro.get("returns_20d", {})
+        ytd = macro.get("returns_ytd", {})
+        source = macro.get("metadata", {}).get("source", "live")
 
     overnight = macro.get("overnight_developments", "No overnight developments logged.")
 
@@ -467,21 +467,16 @@ def _run_regime(ingest: IngestResult) -> RegimeResult:
         return d
 
     signals = RegimeSignals(
-        m2_yoy_pct=_get(["liquidity", "m2_yoy_pct"]),
-        fed_stance=_get(["fed", "stance"]),
-        real_rates=_get(["rates", "real_rate_10y_tips"]),
-        yield_curve_2_10=_get(["rates", "yield_curve_2_10"]),
-        ism_manufacturing=_get(["growth", "ism_manufacturing"]),
-        credit_spread_hy=_get(["market", "hy_credit_spread_bps"]),
-        vix=ingest.vix if ingest.vix > 0 else None,
-        cpi_yoy=_get(["inflation", "cpi_yoy_pct"]),
-        gdp_growth=_get(["growth", "gdp_last_reading_pct"]),
-        data_source="[LIVE DATA REQUIRED — Phase 3]"
-        if all(
-            isinstance(v, str)
-            for v in [_get(["rates", "real_rate_10y_tips"]), _get(["growth", "ism_manufacturing"])]
-        )
-        else "manual_snapshot",
+        m2_yoy_pct=_get(["m2_yoy_pct"]) or _get(["liquidity", "m2_yoy_pct"]),
+        fed_stance=_get(["fed", "funds_rate"]),
+        real_rates=_get(["real_rate_10y_tips"]) or _get(["rates", "real_rate_10y_tips"]),
+        yield_curve_2_10=_get(["yield_curve_2_10"]) or _get(["rates", "yield_curve_2_10"]),
+        ism_manufacturing=_get(["ism_manufacturing"]) or _get(["growth", "ism_manufacturing"]),
+        credit_spread_hy=_get(["hy_credit_spread_bps"]) or _get(["credit", "hy_credit_spread_bps"]),
+        vix=ingest.vix if ingest.vix and ingest.vix > 0 else None,
+        cpi_yoy=_get(["cpi_yoy_pct"]) or _get(["inflation", "cpi_yoy_pct"]),
+        gdp_growth=_get(["gdp_real_qoq_pct"]) or _get(["growth", "gdp_last_reading_pct"]),
+        data_source=macro.get("metadata", {}).get("source", "auto"),
     )
 
     try:
@@ -489,9 +484,11 @@ def _run_regime(ingest: IngestResult) -> RegimeResult:
     except NotImplementedError:
         assessment = None
 
-    manual_regime = _get(["manual_regime_assessment", "regime"], "Unknown")
-    manual_rationale = _get(["manual_regime_assessment", "rationale"], "No manual regime set.")
-    manual_confidence = _get(["manual_regime_assessment", "confidence"], 0)
+    # Auto-classified regime from macro_fetcher takes priority
+    auto_regime = _get(["manual_regime_assessment", "regime"], "")
+    auto_rationale = _get(["manual_regime_assessment", "rationale"], "")
+    auto_confidence = _get(["manual_regime_assessment", "confidence"], 0)
+    auto_signals = _get(["manual_regime_assessment", "signals"], [])
 
     if assessment and assessment.regime != MacroRegime.UNKNOWN:
         macro_regime = assessment.regime.value
@@ -500,13 +497,27 @@ def _run_regime(ingest: IngestResult) -> RegimeResult:
         equity_stance = assessment.equity_stance
         btc_stance = assessment.btc_crypto_stance
         gold_stance = assessment.gold_stance
+    elif auto_regime and auto_regime not in ("[MANUAL INPUT REQUIRED]", "", "Unknown"):
+        macro_regime = auto_regime
+        macro_confidence = int(auto_confidence) if isinstance(auto_confidence, (int, float)) else 50
+        macro_rationale = str(auto_rationale)
+        # Derive stances from regime label
+        _stance_map = {
+            "RISK_ON_GROWTH":       ("Overweight equities, reduce cash",   "Bullish",   "Neutral"),
+            "LATE_CYCLE_CAUTIOUS":  ("Selective — quality over beta",       "Cautious",  "Mild overweight"),
+            "TRANSITIONAL":         ("Balanced, reduce extremes",           "Neutral",   "Mild overweight"),
+            "RISK_OFF_TIGHTENING":  ("Underweight equities, raise cash",    "Bearish",   "Overweight"),
+            "DEFENSIVE_CONTRACTION":("Defensive — bonds and cash",          "Avoid",     "Overweight"),
+        }
+        stances = _stance_map.get(macro_regime, ("Hold current positions", "Neutral", "Neutral"))
+        equity_stance, btc_stance, gold_stance = stances
     else:
-        macro_regime = str(manual_regime)
-        macro_confidence = int(manual_confidence) if isinstance(manual_confidence, (int, float)) else 0
-        macro_rationale = str(manual_rationale)
-        equity_stance = "Unknown — set manual_regime_assessment in macro_snapshot.yaml"
-        btc_stance = "Unknown"
-        gold_stance = "Unknown"
+        macro_regime = "Transitional"
+        macro_confidence = 40
+        macro_rationale = "Regime unclear — defaulting to cautious transitional."
+        equity_stance = "Hold — await regime clarity"
+        btc_stance = "Neutral"
+        gold_stance = "Mild overweight"
 
     sub = [
         _classify_liquidity(macro, ingest),
@@ -862,7 +873,7 @@ def _run_cio_decision(
             research_summary=research_summary,
             bear_case_summary=dissent.groupthink_reason or "No groupthink detected.",
             portfolio_construction_notes=pc.coordinator_summary,
-            routing_rationale=routing.routing_rationale,
+            routing_rationale=getattr(pc, "routing_rationale", "Full committee engaged."),
         )
         raw = _call_agent_live("cio", cio_brief)
 
@@ -1532,5 +1543,15 @@ def run_daily_loop(cfg: Optional[DailyLoopConfig] = None) -> DailyLoopResult:
         _persist_result(result)
     except Exception:
         pass
+
+    # Auto-generate PDF alongside the text report
+    if not cfg.mock:
+        try:
+            from pdf_report import generate_pdf
+            pdf_path = generate_pdf(result)
+            if cfg.verbose:
+                print(f"  PDF: {pdf_path}")
+        except Exception:
+            pass
 
     return result

@@ -6,6 +6,7 @@ Advisory only — no live trading.
 
 from __future__ import annotations
 import json
+import os
 import sys
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
@@ -14,6 +15,16 @@ from typing import Optional
 
 ROOT_DIR = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT_DIR / "src"))
+
+# Load .env so ANTHROPIC_API_KEY is available regardless of how this module is imported
+_env_path = ROOT_DIR / ".env"
+if _env_path.exists():
+    for _line in _env_path.read_text().splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith("#") and "=" in _line:
+            _k, _v = _line.split("=", 1)
+            if _v.strip():
+                os.environ[_k.strip()] = _v.strip()
 
 SESSIONS_DIR = ROOT_DIR / "data" / "processed" / "committee_sessions"
 AGENTS_DIR = ROOT_DIR / "agents"
