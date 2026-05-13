@@ -1,0 +1,61 @@
+name: Daily Portfolio Brief
+
+on:
+  schedule:
+    # 6:30 AM PT (13:30 UTC summer / PDT, 14:30 UTC winter / PST)
+    # Running at both to cover daylight saving transition
+    - cron: '30 13 * * 1-5'
+  workflow_dispatch:  # allows manual trigger from GitHub UI
+
+jobs:
+  daily-brief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write .env from secrets
+        run: |
+          cat > .env << EOF
+          FRED_API_KEY=${{ secrets.FRED_API_KEY }}
+          ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_USER=${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD=${{ secrets.GMAIL_APP_PASSWORD }}
+          REPORT_EMAIL_TO=${{ secrets.REPORT_EMAIL_TO }}
+          EOF
+
+      - name: Run daily loop
+        run: |
+          python -c "
+          import sys
+          sys.path.insert(0, 'src')
+          from daily_loop import run_daily_loop, DailyLoopConfig
+          result = run_daily_loop(DailyLoopConfig(mock=False, verbose=True))
+          print(f'Phases OK: {result.phases_ok()}')
+          print(f'Phases failed: {result.phases_failed()}')
+          print(f'Elapsed: {result.total_elapsed_s:.1f}s')
+          if result.phases_failed():
+              print('ERROR DETAILS:')
+              for e in result.error_summary:
+                  print(f'  {e}')
+          "
+
+      - name: Upload PDF artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-brief-${{ github.run_id }}
+          path: reports/daily/*.pdf
+          retention-days: 30
+          if-no-files-found: warn

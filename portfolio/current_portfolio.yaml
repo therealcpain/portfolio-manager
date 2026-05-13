@@ -134,12 +134,97 @@ options_convexity:
   positions: []  # Add when options are initiated
 
 # ─────────────────────────────────────────
-# BUCKET 4: Experimental / Evolutionary
-# Target: up to 20%
+# BUCKET 4: Individual Equities
+# Target: 0–20% (max 5% per single name)
+# Criteria: highly differentiated, industry-leading,
+#           low forward P/E, NO pure-software companies
+# ─────────────────────────────────────────
+individual_equities:
+  target_pct_min: 0
+  target_pct_max: 20
+  current_pct: 0.0   # Not initiated yet — monitoring phase
+  max_per_name_pct: 5
+  entry_rule: "Only enter if forward P/E is below the ceiling AND thesis is Confirmed"
+  note: "Avoid pure software. Prioritize moat + low fwd P/E + industry leadership."
+
+  positions:
+    - ticker: JPM
+      name: "JPMorgan Chase"
+      type: equity_individual
+      bucket: individual_equities
+      status: watching          # watching | initiated | exited
+      forward_pe_ceiling: 16    # only add if fwd P/E <= this
+      moat: "Dominant universal bank; largest US bank by assets; fortress balance sheet; unrivalled IB + consumer franchise"
+      sector: Financials
+      thesis: "Best-in-class financial franchise with ~13x fwd P/E — below historical average. Rising rate tailwind to NII. Dimon succession overhang creates temporary discount. If rates stay higher-for-longer, earnings beat expectations."
+      invalidation: "Credit cycle turns; consumer delinquencies spike; major macro shock to financial sector; fwd P/E expands above 18x on multiple compression risk"
+      target_zone: "[LIVE DATA REQUIRED]"
+      max_position_pct: 5
+      current_pct: 0.0
+
+    - ticker: UNH
+      name: "UnitedHealth Group"
+      type: equity_individual
+      bucket: individual_equities
+      status: watching
+      forward_pe_ceiling: 20
+      moat: "Largest US health insurer + Optum vertically integrated care platform; near-monopoly data flywheel"
+      sector: Healthcare
+      thesis: "~17x fwd P/E for a business with 15%+ EPS growth and structural tailwinds from aging demographics. Optum Health creates durable earnings diversification beyond insurance. Regulatory risk is overstated — UNH is too embedded to unwind."
+      invalidation: "Medicare Advantage rate cuts exceed 5%; government single-payer legislation advances; DOJ antitrust action on Optum vertical integration"
+      target_zone: "[LIVE DATA REQUIRED]"
+      max_position_pct: 5
+      current_pct: 0.0
+
+    - ticker: CAT
+      name: "Caterpillar Inc."
+      type: equity_individual
+      bucket: individual_equities
+      status: watching
+      forward_pe_ceiling: 22
+      moat: "Global #1 in heavy construction + mining equipment; 60yr dealer network impossible to replicate; aftermarket parts flywheel"
+      sector: Industrials
+      thesis: "~18x fwd P/E with infrastructure supercycle tailwinds (IIJA, global reshoring, mining capex for energy transition metals). Operating leverage model — margin expansion as pricing holds. Services and parts revenue provides earnings floor."
+      invalidation: "US recession triggers construction capex freeze; China infrastructure spending collapses; commodity cycle ends; fwd P/E expands above 25x"
+      target_zone: "[LIVE DATA REQUIRED]"
+      max_position_pct: 5
+      current_pct: 0.0
+
+    - ticker: RTX
+      name: "RTX Corporation (Raytheon)"
+      type: equity_individual
+      bucket: individual_equities
+      status: watching
+      forward_pe_ceiling: 22
+      moat: "Duopoly jet engine manufacturer (Pratt & Whitney) + top-2 defense contractor; long-cycle government contracts with 20yr aftermarket tails"
+      sector: Defense / Aerospace
+      thesis: "~20x fwd P/E for a business with locked-in aftermarket revenue streams and NATO rearming tailwind. GTF engine inspections are a temporary headwind already priced in — replacement cycle creates multi-year earnings visibility. Defense budgets structurally higher post-Ukraine."
+      invalidation: "GTF inspection costs exceed guidance by >$3B; defense budget sequestration; commercial aerospace demand collapses; Pratt engine platform loses next-gen contract"
+      target_zone: "[LIVE DATA REQUIRED]"
+      max_position_pct: 5
+      current_pct: 0.0
+
+    - ticker: TSM
+      name: "Taiwan Semiconductor Manufacturing"
+      type: equity_individual
+      bucket: individual_equities
+      status: watching
+      forward_pe_ceiling: 22
+      moat: "Only manufacturer capable of leading-edge (3nm/2nm) chips; NVIDIA, Apple, AMD all 100% dependent; 10yr technology lead is structural"
+      sector: Semiconductors
+      thesis: "~20x fwd P/E for the picks-and-shovels monopoly of the AI era. Every GPU, every datacenter chip runs through TSMC. Arizona fab expansion reduces geopolitical discount. The AI capex supercycle has 5-7 years of runway — TSMC is the toll booth."
+      invalidation: "China military action on Taiwan; customer fab insourcing (Intel 18A) succeeds at scale; AI capex cycle reverses; N2 yield ramp disappoints"
+      target_zone: "[LIVE DATA REQUIRED]"
+      max_position_pct: 5
+      current_pct: 0.0
+
+# ─────────────────────────────────────────
+# BUCKET 5: Experimental / Evolutionary
+# Target: up to 10%
 # ─────────────────────────────────────────
 experimental:
-  target_pct_max: 20
-  current_pct: 0.0  # PLACEHOLDER — no experimental positions at inception
+  target_pct_max: 10
+  current_pct: 0.0
   positions: []  # Add as opportunities identified
 
 # ─────────────────────────────────────────

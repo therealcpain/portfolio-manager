@@ -454,7 +454,7 @@ def _classify_crypto(ingest: IngestResult) -> RegimeSubAssessment:
     return RegimeSubAssessment("Crypto", label, 65, rationale)
 
 
-def _run_regime(ingest: IngestResult) -> RegimeResult:
+def _run_regime(ingest: IngestResult, cfg: Optional["DailyLoopConfig"] = None) -> RegimeResult:
     from regime_engine import RegimeSignals, classify_regime, MacroRegime
     macro = ingest.macro_snapshot
 
@@ -526,6 +526,14 @@ def _run_regime(ingest: IngestResult) -> RegimeResult:
         _classify_volatility(ingest),
         _classify_crypto(ingest),
     ]
+
+    # Record regime in stability tracker
+    try:
+        from regime_stability import record_regime
+        record_regime(cfg.resolved_date() if hasattr(cfg, "resolved_date") else str(date.today()),
+                      macro_regime, macro_confidence)
+    except Exception:
+        pass
 
     return RegimeResult(
         macro_regime=macro_regime,
@@ -1378,7 +1386,7 @@ def run_daily_loop(cfg: Optional[DailyLoopConfig] = None) -> DailyLoopResult:
 
     # ── Phase 2: Regime ──────────────────────────────────────────────────
     pr, regime_result = _safe_phase(
-        "regime", lambda: _run_regime(ingest), "regime" in skip or ingest is None
+        "regime", lambda: _run_regime(ingest, cfg), "regime" in skip or ingest is None
     )
     phase_results.append(pr)
     if pr.status == "error" or regime_result is None:
@@ -1564,6 +1572,13 @@ def run_daily_loop(cfg: Optional[DailyLoopConfig] = None) -> DailyLoopResult:
     except Exception:
         pass
 
+    # Attach regime stability to result for PDF header
+    try:
+        from regime_stability import get_stability
+        result._regime_stability = get_stability(cfg.resolved_date())
+    except Exception:
+        result._regime_stability = None
+
     # Auto-generate PDF alongside the text report
     if not cfg.mock:
         try:
@@ -1571,6 +1586,13 @@ def run_daily_loop(cfg: Optional[DailyLoopConfig] = None) -> DailyLoopResult:
             pdf_path = generate_pdf(result)
             if cfg.verbose:
                 print(f"  PDF: {pdf_path}")
+            # Email the brief
+            try:
+                from mailer import send_daily_brief
+                send_daily_brief(pdf_path, date_str=cfg.resolved_date())
+            except Exception as mail_exc:
+                if cfg.verbose:
+                    print(f"  [Mailer] Failed: {mail_exc}")
         except Exception:
             pass
 

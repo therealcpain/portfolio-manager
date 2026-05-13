@@ -91,12 +91,13 @@ def generate_pdf(result, output_path=None) -> Path:
     def sec(t): return P(f"▸  {t}", "sec")
 
     # ── Pull data ────────────────────────────────────────────────────────────
-    ingest      = getattr(result, "ingest", None)
-    regime_res  = getattr(result, "regime", None)
-    memos_res   = getattr(result, "memos", None)
-    dissent_res = getattr(result, "dissent", None)
-    cio_res     = getattr(result, "cio_decision", None)
-    org_res     = getattr(result, "org_review", None)
+    ingest          = getattr(result, "ingest", None)
+    regime_res      = getattr(result, "regime", None)
+    memos_res       = getattr(result, "memos", None)
+    dissent_res     = getattr(result, "dissent", None)
+    cio_res         = getattr(result, "cio_decision", None)
+    org_res         = getattr(result, "org_review", None)
+    regime_stab     = getattr(result, "_regime_stability", None)
 
     alloc_snap   = getattr(cio_res, "_allocation_snapshot", None)
     alloc_deltas = getattr(cio_res, "_allocation_deltas", [])
@@ -108,8 +109,8 @@ def generate_pdf(result, output_path=None) -> Path:
     all_positions_yaml = {}
     if portfolio_path.exists():
         portfolio_yaml = yaml.safe_load(portfolio_path.read_text()) or {}
-        for bucket in ("core_structural", "tactical_strategic", "options_convexity",
-                       "experimental", "defensive_reserve"):
+        for bucket in ("core_structural", "tactical_strategic", "individual_equities",
+                       "options_convexity", "experimental", "defensive_reserve"):
             for pos in portfolio_yaml.get(bucket, {}).get("positions", []):
                 ticker = pos.get("ticker", "")
                 if ticker:
@@ -138,15 +139,34 @@ def generate_pdf(result, output_path=None) -> Path:
     regime_label = regime_res.macro_regime.replace("_", " ") if regime_res else "UNKNOWN"
     regime_conf  = regime_res.macro_confidence if regime_res else 0
 
+    # Regime stability line
+    if regime_stab:
+        stab_label = regime_stab.status_label
+        if regime_stab.pending_flip:
+            stab_color = _AMBER
+        elif regime_stab.days_at_regime >= 10:
+            stab_color = _NEON
+        else:
+            stab_color = _MUTED
+    else:
+        stab_label = "Day 1"
+        stab_color = _MUTED
+
+    # Regime banner — two rows: regime name large, stability line below
+    S["regime_big"] = sty("rb", size=14, color=_FLASH, bold=True, align=TA_CENTER, leading=18)
+    S["regime_stab"] = sty("rs", size=8.5, color=stab_color, align=TA_CENTER, leading=12)
+
     hdr_data = [
         [P("PORTFOLIO BRIEF", "h1")],
-        [P(f"{date_str}  ·  {regime_label}  ·  {regime_conf}% regime confidence", "h1sub")],
+        [P(f"<b>{regime_label}</b>  ·  {regime_conf}% confidence", "regime_big")],
+        [P(stab_label, "regime_stab")],
+        [P(f"{date_str}", "h1sub")],
     ]
     hdr = Table(hdr_data, colWidths=[W])
     hdr.setStyle(TableStyle([
         ("BACKGROUND",    (0,0),(-1,-1), C(_DARK)),
-        ("TOPPADDING",    (0,0),(-1,-1), 10),
-        ("BOTTOMPADDING", (0,0),(-1,-1), 10),
+        ("TOPPADDING",    (0,0),(-1,-1), 8),
+        ("BOTTOMPADDING", (0,0),(-1,-1), 8),
         ("LEFTPADDING",   (0,0),(-1,-1), 14),
         ("RIGHTPADDING",  (0,0),(-1,-1), 14),
     ]))
@@ -174,10 +194,24 @@ def generate_pdf(result, output_path=None) -> Path:
             s = f"+{v:.1f}pp" if v > 0 else f"{v:.1f}pp"
             return P(s, "green" if v > 0 else "red")
 
+        _REBALANCE_THRESHOLD_PCT = 5.0  # only flag action if drift exceeds this
+
         for d in alloc_deltas:
             action = d.action.upper()
-            act_style = ("green" if action in ("ADD","INITIATE","RAISE")
-                         else "red" if action in ("TRIM","EXIT","REDUCE") else "body")
+            # Suppress action if all deltas are within tolerance (no drift data yet is OK)
+            max_drift = max(
+                abs(v) for v in [d.delta_1d, d.delta_1w, d.delta_1m] if v is not None
+            ) if any(v is not None for v in [d.delta_1d, d.delta_1w, d.delta_1m]) else 0
+            if action not in ("EXIT", "INITIATE") and max_drift < _REBALANCE_THRESHOLD_PCT and action not in ("ADD", "TRIM", "RAISE", "REDUCE"):
+                display_action = "HOLD"
+                act_style = "body"
+            elif action not in ("EXIT", "INITIATE") and max_drift < _REBALANCE_THRESHOLD_PCT and action in ("ADD", "TRIM", "RAISE", "REDUCE"):
+                display_action = f"HOLD*"   # CIO wanted action but drift < 5% threshold
+                act_style = "small"
+            else:
+                display_action = action
+                act_style = ("green" if action in ("ADD","INITIATE","RAISE")
+                             else "red" if action in ("TRIM","EXIT","REDUCE") else "body")
             # Normalize cash label
             label = "CASH / STRC" if d.ticker in ("CASH", "STRC") else d.ticker
             rows.append([
@@ -186,7 +220,7 @@ def generate_pdf(result, output_path=None) -> Path:
                 fmt_delta(d.delta_1d),
                 fmt_delta(d.delta_1w),
                 fmt_delta(d.delta_1m),
-                P(action, act_style),
+                P(display_action, act_style),
                 P(f"{d.confidence}%" if d.confidence else "—", "small"),
             ])
 
@@ -217,7 +251,8 @@ def generate_pdf(result, output_path=None) -> Path:
         # Legend
         story.append(P(
             "ADD = increase  ·  TRIM = reduce  ·  HOLD = no change  ·  "
-            "EXIT = close position  ·  INITIATE = new  ·  pp = percentage points vs prior day",
+            "EXIT = close position  ·  INITIATE = new  ·  HOLD* = CIO wanted action but drift <5% (within tolerance)  ·  "
+            "pp = percentage points vs prior period",
             "small"
         ))
         story.append(SP(4))

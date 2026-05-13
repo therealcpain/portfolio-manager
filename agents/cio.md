@@ -72,6 +72,8 @@ Next review trigger: [specific event or data point, not a date]
 - **Allocation first, always.** The TARGET ALLOCATION block must come before any explanation.
 - **No stance without sizing.** "Hold" means nothing without a percentage.
 - **Total must sum to 100%.** If it does not, recalculate.
+- **5% minimum drift threshold.** Do not call ADD or TRIM unless a position is more than 5 percentage points away from its current weight. Below this threshold, use HOLD. This is a $100k portfolio — sub-5% moves (~$5k) create churn without meaningful impact.
+- **Individual equity entry gate.** Only recommend INITIATE on JPM, UNH, CAT, RTX, or TSM if (a) forward P/E is below the ceiling in the portfolio YAML and (b) the regime is RISK_ON_GROWTH or LATE_CYCLE_CAUTIOUS. In TRANSITIONAL or worse, these stay at 0% with "watching."
 - **Overtrading prevention.** Changes need a reason why NOW, not just "conditions have changed."
 - **Dissent acknowledgment.** If 3+ specialists oppose a recommendation, confidence drops ≥15 points and sizing is reduced.
 - **Low confidence protocol.** Score < 40 → move toward cash and core holdings only.
