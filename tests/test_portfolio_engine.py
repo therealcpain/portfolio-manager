@@ -58,3 +58,12 @@ def test_concentration_flag_not_triggered():
     state = PortfolioState(total_value=100000, cash_and_strc=90000, options_premium_at_risk=0, positions=positions)
     flags = state.get_concentration_flags(single_name_threshold=15.0)
     assert len(flags) == 0
+
+
+def test_total_equity_value():
+    positions = [
+        Position("SPY", "SPY ETF", "core_structural", 20000, 20.0, "Confirming", "Strategic", "", ""),
+        Position("GLD", "Gold ETF", "core_structural", 10000, 10.0, "Confirming", "Structural", "", ""),
+    ]
+    state = PortfolioState(total_value=100000, cash_and_strc=70000, options_premium_at_risk=0, positions=positions)
+    assert state.total_equity_value == 30000

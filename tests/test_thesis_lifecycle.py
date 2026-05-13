@@ -35,7 +35,7 @@ def _make_thesis(state: ThesisState) -> Thesis:
 
 
 def test_all_states_have_sizing_guidance():
-    for state in ThesisState:
+    for state in ThesisState.ALL:
         assert state in STATE_SIZING_GUIDANCE, f"Missing sizing guidance for {state}"
 
 
