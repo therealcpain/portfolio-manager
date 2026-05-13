@@ -1,0 +1,47 @@
+# Alternative Portfolio: Aggressive Scarcity
+# Pure scarcity thesis — no diversification, no macro overlay.
+# Used to benchmark: "Is the CIO's diversification adding value vs pure scarcity exposure?"
+# Advisory only. Performance: [SIMULATED - Phase 2+]
+
+id: aggressive_scarcity
+name: "Aggressive Scarcity Portfolio"
+inception_date: "2026-05-13"
+starting_capital: 100000
+philosophy: >
+  Maximum exposure to scarce assets: BTC-adjacent, gold, uranium, energy.
+  No diversification into broad equities. No options overlay. No defensive reserve.
+  This is the pure scarcity bet — uncomfortable, concentrated, long-horizon.
+
+allocations:
+  - ticker: MSTR
+    name: "MicroStrategy (BTC Treasury)"
+    pct: 30
+    rationale: "Maximum BTC leverage via equity"
+  - ticker: GLD
+    name: "SPDR Gold Shares"
+    pct: 25
+    rationale: "Gold monetary scarcity"
+  - ticker: URNM
+    name: "Sprott Uranium Miners"
+    pct: 20
+    rationale: "Uranium supply deficit"
+  - ticker: IBIT
+    name: "iShares Bitcoin ETF"
+    pct: 15
+    rationale: "Direct BTC exposure"
+  - ticker: XLE
+    name: "Energy Select Sector SPDR"
+    pct: 10
+    rationale: "Energy infrastructure scarcity"
+
+constraints:
+  rebalance_frequency: quarterly
+  no_options: true
+  no_cash: true
+  no_broad_equities: true
+
+performance: "[SIMULATED - Phase 2+]"
+purpose: >
+  Compare to main CIO portfolio. If this outperforms consistently,
+  the CIO's diversification is destroying value. If it underperforms with worse drawdowns,
+  the CIO is adding value through risk management.

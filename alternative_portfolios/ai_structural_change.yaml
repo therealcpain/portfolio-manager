@@ -1,0 +1,50 @@
+# Alternative Portfolio: AI / Technology Structural Change
+# Pure AI and technology structural change thesis.
+# Advisory only. Performance: [SIMULATED - Phase 2+]
+
+id: ai_structural_change
+name: "AI / Technology Structural Change Portfolio"
+inception_date: "2026-05-13"
+starting_capital: 100000
+philosophy: >
+  Bet on the AI infrastructure buildout and technology structural change as the
+  dominant investment theme. Semiconductors, datacenter power, AI software,
+  robotics infrastructure. No commodities for their own sake. No crypto.
+  The scarcity here is compute, power, and software distribution.
+
+allocations:
+  - ticker: QQQ
+    name: "Nasdaq-100 ETF"
+    pct: 30
+    rationale: "Broad AI/tech exposure; mega-cap tech distribution moats"
+  - ticker: NVDA
+    name: "NVIDIA Corporation"
+    pct: 20
+    rationale: "AI compute scarcity; dominant GPU architecture; training + inference"
+  - ticker: SMH
+    name: "VanEck Semiconductor ETF"
+    pct: 20
+    rationale: "Semiconductor cycle; AI-driven demand; diversified vs single name"
+  - ticker: NEE
+    name: "NextEra Energy (or equivalent power utility)"
+    pct: 10
+    rationale: "Datacenter power demand growth; grid infrastructure scarcity"
+  - ticker: MSFT
+    name: "Microsoft Corporation"
+    pct: 10
+    rationale: "AI distribution moat (Copilot, Azure AI, OpenAI relationship)"
+  - ticker: STRC_PROXY
+    name: "Cash / STRC"
+    pct: 10
+    rationale: "Reserve for adding on pullbacks"
+
+constraints:
+  no_crypto: true
+  no_traditional_commodities: true
+  rebalance_frequency: monthly
+  focus: "AI infrastructure and structural technology change"
+
+performance: "[SIMULATED - Phase 2+]"
+purpose: >
+  Test if pure AI/tech structural change outperforms the CIO's diversified approach.
+  This portfolio wins massively in an AI bull and loses severely if AI capex cycle reverses.

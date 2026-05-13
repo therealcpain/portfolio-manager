@@ -1,0 +1,175 @@
+# Signal vs Action Schema
+# Every signal must be explicitly separated from the action taken (or not taken).
+# This prevents overtrading and enforces discipline.
+
+# Core Principle:
+# A signal tells you WHAT is happening.
+# An action tells you WHAT TO DO ABOUT IT — and why NOW.
+# They are not the same thing.
+
+schema:
+  signal_record:
+    id: "SIGNAL-XXX"
+    date: "YYYY-MM-DD"
+    asset: "Ticker"
+    signal_type: "See signal_types below"
+    signal_strength: "Weak | Moderate | Strong | Very Strong"
+    signal_source: "Agent name"
+    signal_description: "What is the signal? (Factual, not prescriptive)"
+    timeframe: "Tactical | Strategic | Structural"
+    confirmation_required: "Yes | No"
+    confirmation_status: "Pending | Confirmed | Not Confirmed | Expired"
+
+  action_record:
+    id: "ACTION-XXX"
+    signal_id: "Linked signal ID"
+    date: "YYYY-MM-DD"
+    action: "See action_types below"
+    asset: "Ticker"
+    size: "Dollar amount or % of portfolio"
+    rationale: "Why act NOW vs wait? Specific, not generic."
+    why_not_earlier: "Was there a reason to wait? (Technical confirmation, etc.)"
+    why_not_later: "Why not wait further? (Urgency justification)"
+    urgency: "High | Medium | Low"
+    invalidation_of_action: "What would prove this action wrong?"
+
+# ─────────────────────────────────────────
+# Signal Types
+# ─────────────────────────────────────────
+signal_types:
+
+  macro:
+    - Liquidity_Expansion
+    - Liquidity_Contraction
+    - Fed_Pivot_Signal
+    - Recession_Risk_Rising
+    - Inflation_Re_Acceleration
+    - Dollar_Strengthening
+    - Dollar_Weakening
+    - Yield_Curve_Inversion
+    - Yield_Curve_Steepening
+    - M2_Acceleration
+    - Credit_Spread_Widening
+    - Financial_Conditions_Tightening
+
+  technical:
+    - Breakout_Above_Resistance
+    - Breakdown_Below_Support
+    - Golden_Cross  # 50d crosses 200d upward
+    - Death_Cross   # 50d crosses 200d downward
+    - RSI_Divergence_Bullish
+    - RSI_Divergence_Bearish
+    - RSI_Oversold_Reversal
+    - RSI_Overbought_Warning
+    - Volume_Confirmed_Move
+    - Low_Volume_Warning
+    - Trendline_Break
+    - Higher_High_Higher_Low  # uptrend confirmation
+    - Lower_High_Lower_Low    # downtrend confirmation
+
+  momentum:
+    - Momentum_Breakout_Early  # most valuable
+    - Momentum_Continuation
+    - Momentum_Fading
+    - Momentum_Exhaustion
+
+  sentiment:
+    - Extreme_Fear  # contrarian buy signal (with thesis)
+    - Extreme_Greed  # contrarian sell signal
+    - Capitulation
+    - Euphoria
+    - Crowded_Trade_Detected
+    - Retail_Mania
+    - Institutional_Accumulation
+    - Narrative_Saturation
+
+  scarcity:
+    - Supply_Deficit_Worsening
+    - Supply_Response_Delayed
+    - Demand_Acceleration
+    - Scarcity_Premium_Rising
+    - Scarcity_Premium_Normalizing
+
+  crypto:
+    - ETF_Inflow_Acceleration
+    - ETF_Outflow_Warning
+    - Stablecoin_Supply_Growth
+    - BTC_Dominance_Rising
+    - BTC_Dominance_Falling  # altcoin season risk-on
+    - Funding_Rate_Extreme
+    - Exchange_Flow_Warning
+
+  options:
+    - Options_Decay_Alert  # theta consuming too much
+    - Profit_Target_Hit
+    - Invalidation_Triggered
+    - Roll_Opportunity
+    - IV_Spike  # expensive to buy options now
+
+  risk:
+    - Concentration_Risk_Flag
+    - Liquidity_Risk_Flag
+    - Catastrophic_Risk_Alert
+    - Correlation_Cluster_Warning
+
+# ─────────────────────────────────────────
+# Action Types
+# ─────────────────────────────────────────
+action_types:
+  - Buy_Full  # full target position
+  - Buy_Partial  # partial — awaiting more confirmation
+  - Buy_Add  # adding to existing position
+  - Sell_Full  # exit completely
+  - Sell_Trim  # reduce but maintain position
+  - Hold  # no change — explicit decision
+  - Watch  # monitoring, no action yet
+  - Wait_For_Confirmation  # signal present, action pending confirmation
+  - Open_Option  # initiate options position
+  - Close_Option  # exit options position
+  - Roll_Option  # roll to later expiry
+  - Take_Partial_Profit_Option  # trim options for decay
+  - Move_To_STRC  # park in safe yield instrument
+  - Watchlist_Add  # move to watchlist for monitoring
+  - Watchlist_Remove
+
+# ─────────────────────────────────────────
+# Example: Signal ≠ Action
+# ─────────────────────────────────────────
+examples:
+
+  example_1:
+    signal:
+      type: Breakout_Above_Resistance
+      asset: QQQ
+      strength: Moderate
+      description: "QQQ broke above prior resistance at $XXX on above-average volume"
+    action:
+      action: Wait_For_Confirmation
+      rationale: "Breakout occurred but RSI shows bearish divergence. Requiring 1–2 week hold above resistance and RSI reset before adding."
+      why_not_now: "RSI divergence at breakout is a warning sign per system rules."
+    lesson: "Price broke out but the system correctly waited for confirmation — preventing entry at a false breakout."
+
+  example_2:
+    signal:
+      type: Momentum_Fading
+      asset: MSTR
+      strength: Moderate
+      description: "MSTR 3-month momentum is fading vs BTC; volume declining on price rises"
+    action:
+      action: Hold
+      rationale: "Thesis is intact (BTC structural bull). Momentum fading is a tactical signal only. Long-term thesis horizon justifies hold with no trim yet."
+      why_not_trim: "Momentum fading alone is not a trim trigger unless technical breakdown also occurs."
+    lesson: "Signal is informative but does not require immediate action when thesis is structural."
+
+  example_3:
+    signal:
+      type: RSI_Divergence_Bearish
+      asset: GLD
+      strength: Strong
+      description: "Gold price at new high; RSI making lower high. Volume declining."
+    action:
+      action: Sell_Trim
+      size: "25% of position"
+      rationale: "RSI divergence at resistance with volume weakness is a user-specified hard preference: trim, wait, or require breakout confirmation."
+      urgency: Medium
+    lesson: "RSI divergence triggers trim per explicit investor preference."

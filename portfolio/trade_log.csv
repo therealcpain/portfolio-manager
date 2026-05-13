@@ -1,0 +1,7 @@
+date,trade_id,ticker,action,type,shares_or_contracts,price,total_value,bucket,reason,confidence_score,agent_lead,thesis_id,notes
+2026-05-13,TRD-001,SPY,BUY,equity,0,0.00,20000,core_structural,Initial portfolio allocation,55,CIO,THESIS-001,PLACEHOLDER - Phase 1 model. [LIVE DATA REQUIRED] for actual shares and price.
+2026-05-13,TRD-002,QQQ,BUY,equity,0,0.00,15000,core_structural,Initial portfolio allocation,55,CIO,THESIS-001,PLACEHOLDER - Phase 1 model. [LIVE DATA REQUIRED] for actual shares and price.
+2026-05-13,TRD-003,MSTR,BUY,equity,0,0.00,10000,core_structural,Initial portfolio allocation,60,CIO,THESIS-002,PLACEHOLDER - Phase 1 model. [LIVE DATA REQUIRED] for actual shares and price.
+2026-05-13,TRD-004,GLD,BUY,equity,0,0.00,10000,core_structural,Initial portfolio allocation,65,CIO,THESIS-003,PLACEHOLDER - Phase 1 model. [LIVE DATA REQUIRED] for actual shares and price.
+2026-05-13,TRD-005,URNM,BUY,equity,0,0.00,5000,core_structural,Initial portfolio allocation,55,CIO,THESIS-004,PLACEHOLDER - Phase 1 model. [LIVE DATA REQUIRED] for actual shares and price.
+2026-05-13,TRD-006,STRC,BUY,strc_money_market,0,0.00,10000,tactical_strategic,Cash deployed to yield-bearing instrument,N/A,CIO,N/A,PLACEHOLDER - Phase 1 model.

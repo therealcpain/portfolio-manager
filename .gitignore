@@ -1,0 +1,60 @@
+# Environment
+.env
+.env.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+venv/
+.venv/
+env/
+.python-version
+
+# Data — raw market data and snapshots (can be large; regenerated)
+data/raw/
+data/processed/
+data/market_data/
+data/portfolio_snapshots/
+
+# Manual inputs are tracked (intentional)
+!data/manual_inputs/
+
+# Reports — generated output, not source
+reports/daily/
+reports/weekly/
+reports/monthly/
+
+# Keep templates
+!reports/templates/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# API keys / secrets
+secrets.yaml
+secrets.json
+credentials.json

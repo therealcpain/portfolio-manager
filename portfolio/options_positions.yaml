@@ -1,0 +1,41 @@
+# Options Positions Log — Advisory Model
+# Advisory only. No live trading. All options are model positions.
+# Rules: No 0DTE. No spreads. Prefer weeks to months. Liquid contracts only.
+
+metadata:
+  as_of_date: "2026-05-13"
+  note: "PHASE 1 — No options positions at inception. Populate when initiated."
+
+open_positions: []
+
+# Template for each position:
+# - id: "OPT-001"
+#   ticker: SPY
+#   type: call  # call or put
+#   strike: 0.00  # [LIVE DATA REQUIRED]
+#   expiry: "YYYY-MM-DD"
+#   contracts: 0
+#   premium_paid_per_contract: 0.00
+#   total_premium_paid: 0.00
+#   portfolio_pct: 0.0
+#   opened_date: "YYYY-MM-DD"
+#   thesis: ""
+#   invalidation: ""
+#   profit_target_pct: 50  # Take profits at 50%+ gain
+#   exit_rule: "Exit if theta consumes 30% of premium with no thesis progress"
+#   roll_rule: "Roll only if thesis remains valid and there is time value to save"
+#   current_value: 0.00  # [LIVE DATA REQUIRED]
+#   current_pnl: 0.00  # [LIVE DATA REQUIRED]
+#   delta: 0.00  # [LIVE DATA REQUIRED]
+#   theta: 0.00  # [LIVE DATA REQUIRED]
+#   iv: 0.00  # [LIVE DATA REQUIRED]
+#   days_to_expiry: 0  # [LIVE DATA REQUIRED]
+#   status: Active  # Active / Trim / Exit / Roll / Expired / Closed
+
+closed_positions: []
+
+summary:
+  total_options_exposure: 0.00
+  total_options_pct: 0.0
+  net_theta_per_day: 0.00
+  convexity_posture: None  # Bullish / Bearish / Hedged / None

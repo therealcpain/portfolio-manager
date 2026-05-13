@@ -1,0 +1,33 @@
+# Alternative Portfolio: STRC / Money Market Defensive
+# Pure capital preservation — 100% in yield-bearing safe instruments.
+# Advisory only. Performance: [SIMULATED - Phase 2+]
+
+id: strc_defensive
+name: "STRC / Money Market Defensive Portfolio"
+inception_date: "2026-05-13"
+starting_capital: 100000
+philosophy: >
+  Do nothing. Earn the risk-free rate. Test whether the active management of the
+  main CIO portfolio justifies the risk it takes vs simply parking in STRC or money market.
+  This is the ultimate opportunity cost benchmark.
+
+allocations:
+  - ticker: STRC_PROXY
+    name: "STRC or 3-month T-bill proxy"
+    pct: 80
+    rationale: "Maximum yield with near-zero risk"
+  - ticker: GLD
+    name: "Gold — minimal hedge"
+    pct: 20
+    rationale: "Tail risk hedge against currency debasement; still low-risk posture"
+
+return_assumption:
+  strc_annual_yield: "[LIVE DATA REQUIRED — current 3-month T-bill rate]"
+  note: "Yield changes with Fed policy. Track rolling annual return."
+
+performance: "[SIMULATED - Phase 2+]"
+purpose: >
+  The most important alternative portfolio.
+  If the main CIO portfolio cannot beat STRC over 2–3 years on a risk-adjusted basis,
+  the system is destroying value vs inaction.
+  Every active position must be justified against this baseline.

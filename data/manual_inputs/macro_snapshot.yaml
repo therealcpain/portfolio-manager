@@ -1,0 +1,52 @@
+# Manual Macro Snapshot — Phase 1
+# Fill in manually when live data is not yet integrated.
+# All values marked [MANUAL INPUT REQUIRED] must be filled by the investor.
+# This file is tracked by git (manual inputs are intentional).
+
+metadata:
+  as_of_date: "2026-05-13"
+  source: "Manual input — replace with FRED API in Phase 3"
+  note: "Phase 1 — manually populated until Phase 3 data integration"
+
+fed:
+  funds_rate: "[MANUAL INPUT REQUIRED]"
+  stance: "[MANUAL INPUT REQUIRED]"  # Hiking | Pausing | Cutting
+  next_meeting_date: "[MANUAL INPUT REQUIRED]"
+  market_implied_next_move: "[MANUAL INPUT REQUIRED]"
+
+rates:
+  us_10y_yield: "[MANUAL INPUT REQUIRED]"
+  us_2y_yield: "[MANUAL INPUT REQUIRED]"
+  real_rate_10y_tips: "[MANUAL INPUT REQUIRED]"
+  yield_curve_2_10: "[MANUAL INPUT REQUIRED]"  # 10y - 2y in bps
+
+inflation:
+  cpi_yoy_pct: "[MANUAL INPUT REQUIRED]"
+  core_cpi_yoy_pct: "[MANUAL INPUT REQUIRED]"
+  pce_yoy_pct: "[MANUAL INPUT REQUIRED]"
+
+growth:
+  gdp_last_reading_pct: "[MANUAL INPUT REQUIRED]"
+  ism_manufacturing: "[MANUAL INPUT REQUIRED]"
+  ism_services: "[MANUAL INPUT REQUIRED]"
+  unemployment_rate: "[MANUAL INPUT REQUIRED]"
+
+liquidity:
+  m2_yoy_pct: "[MANUAL INPUT REQUIRED]"
+  fed_balance_sheet_b: "[MANUAL INPUT REQUIRED]"  # in billions
+  rrp_balance_b: "[MANUAL INPUT REQUIRED]"  # Reverse repo balance
+  financial_conditions_index: "[MANUAL INPUT REQUIRED]"
+
+market:
+  spy_price: "[MANUAL INPUT REQUIRED]"
+  qqq_price: "[MANUAL INPUT REQUIRED]"
+  vix: "[MANUAL INPUT REQUIRED]"
+  dxy: "[MANUAL INPUT REQUIRED]"
+  hy_credit_spread_bps: "[MANUAL INPUT REQUIRED]"
+  btc_price: "[MANUAL INPUT REQUIRED]"
+  gold_price: "[MANUAL INPUT REQUIRED]"
+
+manual_regime_assessment:
+  regime: "[MANUAL INPUT REQUIRED]"  # See MacroRegime enum in regime_engine.py
+  rationale: "[MANUAL INPUT REQUIRED]"
+  confidence: 0  # 1–100

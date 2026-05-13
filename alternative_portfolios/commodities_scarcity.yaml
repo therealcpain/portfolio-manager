@@ -1,0 +1,45 @@
+# Alternative Portfolio: Commodities Scarcity
+# Pure commodity scarcity — no crypto, no equities, no tech.
+# Advisory only. Performance: [SIMULATED - Phase 2+]
+
+id: commodities_scarcity
+name: "Commodities Scarcity Portfolio"
+inception_date: "2026-05-13"
+starting_capital: 100000
+philosophy: >
+  Test the pure commodity scarcity thesis in isolation.
+  Gold, silver, uranium, energy, copper — the physical scarcity assets.
+  No digital scarcity. No equity beta. No tech.
+
+allocations:
+  - ticker: GLD
+    name: "SPDR Gold Shares"
+    pct: 35
+    rationale: "Dominant monetary scarcity asset; central bank demand; currency hedge"
+  - ticker: URNM
+    name: "Sprott Uranium Miners ETF"
+    pct: 25
+    rationale: "Uranium supply deficit; nuclear renaissance"
+  - ticker: SLV
+    name: "iShares Silver Trust"
+    pct: 15
+    rationale: "Silver monetary + industrial demand; gold/silver ratio opportunity"
+  - ticker: XLE
+    name: "Energy Select Sector SPDR"
+    pct: 15
+    rationale: "Energy capex famine; oil supply constraint"
+  - ticker: COPX
+    name: "Global X Copper Miners ETF"
+    pct: 10
+    rationale: "Electrification demand; supply-constrained long-cycle commodity"
+
+constraints:
+  no_crypto: true
+  no_tech_equity: true
+  no_broad_equity_etf: true
+  rebalance_frequency: quarterly
+
+performance: "[SIMULATED - Phase 2+]"
+purpose: >
+  Test if physical commodity scarcity alone generates alpha vs the CIO's blended approach.
+  Commodities tend to outperform in inflationary regimes and underperform in deflationary ones.

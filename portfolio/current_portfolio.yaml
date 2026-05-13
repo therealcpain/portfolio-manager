@@ -1,0 +1,167 @@
+# Current Portfolio — Advisory Model
+# Advisory only. No live trading. All values are model positions.
+# Last updated: 2026-05-13
+# Starting capital: $100,000
+
+metadata:
+  account_type: Roth IRA
+  starting_capital: 100000
+  currency: USD
+  as_of_date: "2026-05-13"
+  phase: 1
+  note: "PHASE 1 — No live data. All positions are illustrative starting allocations. Replace with actual data in Phase 3."
+
+# ─────────────────────────────────────────
+# BUCKET 1: Core / Structural Holdings
+# Target: 50–75% of portfolio
+# ─────────────────────────────────────────
+core_structural:
+  target_pct_min: 50
+  target_pct_max: 75
+  current_pct: 60.0  # PLACEHOLDER
+
+  positions:
+    - ticker: SPY
+      name: "SPDR S&P 500 ETF"
+      type: equity_etf
+      bucket: core_structural
+      shares: 0  # PLACEHOLDER — fill in Phase 3
+      cost_basis_per_share: 0.00  # PLACEHOLDER
+      current_price: 0.00  # [LIVE DATA REQUIRED]
+      market_value: 20000  # PLACEHOLDER
+      portfolio_pct: 20.0  # PLACEHOLDER
+      thesis_lifecycle: Confirming
+      time_horizon: Strategic
+      thesis: "Broad US equity exposure; macro risk-on regime core holding"
+      invalidation: "Macro regime shifts to recession; SPY breaks 200d MA with volume confirmation"
+      target_zone: "[LIVE DATA REQUIRED]"
+      trim_rule: "Trim 25% if extended RSI divergence at resistance + macro deterioration"
+
+    - ticker: QQQ
+      name: "Invesco Nasdaq-100 ETF"
+      type: equity_etf
+      bucket: core_structural
+      shares: 0  # PLACEHOLDER
+      cost_basis_per_share: 0.00
+      current_price: 0.00  # [LIVE DATA REQUIRED]
+      market_value: 15000  # PLACEHOLDER
+      portfolio_pct: 15.0  # PLACEHOLDER
+      thesis_lifecycle: Confirming
+      time_horizon: Strategic
+      thesis: "AI/tech structural growth; Nasdaq momentum; scarcity in compute leadership"
+      invalidation: "AI capex cycle reversal; earnings revisions turn negative; breaks 200d MA"
+      target_zone: "[LIVE DATA REQUIRED]"
+      trim_rule: "Trim 25% if RSI divergence at resistance + weakening AI earnings"
+
+    - ticker: MSTR
+      name: "MicroStrategy Incorporated"
+      type: equity_btc_treasury
+      bucket: core_structural
+      shares: 0  # PLACEHOLDER
+      cost_basis_per_share: 0.00
+      current_price: 0.00  # [LIVE DATA REQUIRED]
+      market_value: 10000  # PLACEHOLDER
+      portfolio_pct: 10.0  # PLACEHOLDER
+      thesis_lifecycle: Confirming
+      time_horizon: Strategic
+      thesis: "Leveraged BTC exposure via equity; Bitcoin treasury company; scarcity premium"
+      invalidation: "BTC structural breakdown; MSTR premium to NAV collapses; dilution accelerates beyond thesis"
+      target_zone: "[LIVE DATA REQUIRED]"
+      trim_rule: "Trim 50% if BTC drops below key support on volume"
+
+    - ticker: GLD
+      name: "SPDR Gold Shares"
+      type: commodity_etf
+      bucket: core_structural
+      shares: 0  # PLACEHOLDER
+      cost_basis_per_share: 0.00
+      current_price: 0.00  # [LIVE DATA REQUIRED]
+      market_value: 10000  # PLACEHOLDER
+      portfolio_pct: 10.0  # PLACEHOLDER
+      thesis_lifecycle: Confirming
+      time_horizon: Structural
+      thesis: "Monetary scarcity hedge; currency debasement protection; central bank demand"
+      invalidation: "Real rates rise substantially and sustain; dollar strengthens significantly; gold loses 200d MA"
+      target_zone: "[LIVE DATA REQUIRED]"
+      trim_rule: "Trim 25% if real rates spike > 2% and gold fails to hold key support"
+
+    - ticker: URNM
+      name: "Sprott Uranium Miners ETF"
+      type: commodity_etf
+      bucket: core_structural
+      shares: 0  # PLACEHOLDER
+      cost_basis_per_share: 0.00
+      current_price: 0.00  # [LIVE DATA REQUIRED]
+      market_value: 5000  # PLACEHOLDER
+      portfolio_pct: 5.0  # PLACEHOLDER
+      thesis_lifecycle: Emerging
+      time_horizon: Structural
+      thesis: "Uranium supply deficit; nuclear renaissance; datacenter power demand; long contracting cycle"
+      invalidation: "Nuclear project wave cancellation; major new uranium supply discovery; Kazakhstan supply normalizes"
+      target_zone: "[LIVE DATA REQUIRED]"
+      trim_rule: "Trim 25% if nuclear political momentum reverses in key markets"
+
+# ─────────────────────────────────────────
+# BUCKET 2: Tactical / Strategic Trades
+# Target: 10–30% of portfolio
+# ─────────────────────────────────────────
+tactical_strategic:
+  target_pct_min: 10
+  target_pct_max: 30
+  current_pct: 10.0  # PLACEHOLDER
+
+  positions:
+    - ticker: STRC
+      name: "STRC or Money Market Equivalent"
+      type: strc_money_market
+      bucket: tactical_strategic
+      market_value: 10000  # PLACEHOLDER
+      portfolio_pct: 10.0  # PLACEHOLDER
+      thesis_lifecycle: N/A
+      time_horizon: Tactical
+      thesis: "Deployed cash earning yield while awaiting high-conviction tactical opportunities"
+      invalidation: "N/A — default cash management"
+      note: "Cash should always be in STRC or equivalent, never idle"
+
+# ─────────────────────────────────────────
+# BUCKET 3: Options / Convexity
+# Target: 10–20% (can exceed when asymmetry is explosive)
+# ─────────────────────────────────────────
+options_convexity:
+  target_pct_min: 10
+  target_pct_max: 20
+  current_pct: 0.0  # No options in starting portfolio
+  positions: []  # Add when options are initiated
+
+# ─────────────────────────────────────────
+# BUCKET 4: Experimental / Evolutionary
+# Target: up to 20%
+# ─────────────────────────────────────────
+experimental:
+  target_pct_max: 20
+  current_pct: 0.0  # PLACEHOLDER — no experimental positions at inception
+  positions: []  # Add as opportunities identified
+
+# ─────────────────────────────────────────
+# BUCKET 5: Defensive Reserve
+# Target: 0–40% (rises during de-risking)
+# ─────────────────────────────────────────
+defensive_reserve:
+  target_pct_min: 0
+  target_pct_max: 40
+  current_pct: 0.0  # Fully deployed at start
+  instrument: "STRC or money market equivalent"
+  positions: []
+
+# ─────────────────────────────────────────
+# PORTFOLIO SUMMARY
+# ─────────────────────────────────────────
+summary:
+  total_market_value: 70000  # PLACEHOLDER — remaining in STRC/cash
+  cash_and_strc: 30000  # PLACEHOLDER
+  options_premium_at_risk: 0
+  effective_leverage_ratio: 1.0  # No leverage at inception
+  portfolio_confidence_score: 55  # PLACEHOLDER — initial, no live data
+  last_rebalance_date: "2026-05-13"
+  next_review_date: "2026-05-14"
+  regime: "[LIVE DATA REQUIRED]"

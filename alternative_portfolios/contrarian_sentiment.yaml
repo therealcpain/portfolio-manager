@@ -1,0 +1,51 @@
+# Alternative Portfolio: Contrarian Sentiment
+# Buy when everyone hates it (with thesis). Sell when everyone loves it.
+# Advisory only. Performance: [SIMULATED - Phase 2+]
+
+id: contrarian_sentiment
+name: "Contrarian Sentiment Portfolio"
+inception_date: "2026-05-13"
+starting_capital: 100000
+philosophy: >
+  Systematically fade extreme sentiment. Buy near capitulation with a valid thesis.
+  Reduce at euphoria. The portfolio is most aggressive when sentiment is most fearful
+  and most defensive when sentiment is most bullish.
+  Does not blindly go against sentiment — requires thesis validity AND sentiment extreme.
+
+contrarian_entry_rules:
+  - "CNN Fear & Greed < 20 (Extreme Fear) for the asset class"
+  - "AAII Bulls < 25% (for equity positions)"
+  - "Crypto Fear & Greed < 15 (for crypto-adjacent positions)"
+  - "COT report: commercial positions net long AND speculators net short (for commodities)"
+  - "Valid fundamental thesis intact despite negative sentiment"
+  - "Some technical stabilization (not necessarily uptrend yet)"
+
+contrarian_exit_rules:
+  - "CNN Fear & Greed > 80 (Extreme Greed)"
+  - "AAII Bulls > 55%"
+  - "Crypto Fear & Greed > 85"
+  - "COT: speculators at extreme long positioning"
+  - "Media / social narrative saturation"
+
+initial_positions_placeholder:
+  note: >
+    Contrarian portfolio initiates positions when sentiment is extreme.
+    At inception (May 2026), sentiment readings are [LIVE DATA REQUIRED].
+    Portfolio will build positions as sentiment extremes are identified.
+
+  - ticker: STRC_PROXY
+    pct: 60
+    rationale: "Default — hold cash until contrarian opportunities appear"
+  - ticker: GLD
+    pct: 20
+    rationale: "Placeholder — gold often hated during equity bull runs"
+    sentiment_check: "[LIVE DATA REQUIRED]"
+  - ticker: URNM
+    pct: 20
+    rationale: "Uranium often deeply out of favor — contrarian opportunity"
+    sentiment_check: "[LIVE DATA REQUIRED]"
+
+performance: "[SIMULATED - Phase 2+]"
+purpose: >
+  Test if systematic contrarian sentiment trading beats the CIO's balanced approach.
+  Contrarian portfolios tend to have lumpy returns — periods of underperformance followed by sharp reversals.

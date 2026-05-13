@@ -1,0 +1,105 @@
+# Thesis Log — Advisory Model
+# Tracks every active thesis with lifecycle state, confidence, and invalidation.
+# Advisory only. Updated after every committee session.
+
+metadata:
+  as_of_date: "2026-05-13"
+  note: "PHASE 1 — Illustrative theses. Update with live data in Phase 2+."
+
+# Thesis Lifecycle States:
+# Emerging → Confirming → High Conviction → Crowded → Distribution Risk → Breakdown Risk → Invalidated
+
+active_theses:
+
+  - id: "THESIS-001"
+    name: "US Equity Risk-On Regime"
+    related_positions: [SPY, QQQ]
+    lifecycle_state: Confirming
+    time_horizon: Strategic
+    opened_date: "2026-05-13"
+    thesis: >
+      US equities are in a risk-on expansion regime supported by resilient earnings,
+      moderating inflation, and continued AI/tech structural growth. Fed is on pause
+      or cutting path. Liquidity conditions are supportive.
+    bull_case: "Soft landing confirmed; AI earnings beat; multiple expansion continues"
+    bear_case: "Recession arrives without adequate warning; earnings revisions turn negative"
+    confidence_score: 55  # PLACEHOLDER — [LIVE DATA REQUIRED]
+    key_drivers:
+      - "Fed policy trajectory"
+      - "Earnings revision trend"
+      - "Liquidity conditions (M2, RRP)"
+    invalidation: "SPY breaks 200d MA with volume; earnings revisions turn broadly negative; recession indicators trigger"
+    review_trigger: "Any two of: ISM below 45, unemployment spike, credit spread widening > 100bps"
+    crowding_check: "Moderate — fund managers still cautious; not yet euphoric"
+    next_review_date: "2026-05-20"
+
+  - id: "THESIS-002"
+    name: "BTC / Bitcoin Scarcity Premium"
+    related_positions: [MSTR, IBIT]
+    lifecycle_state: Confirming
+    time_horizon: Strategic
+    opened_date: "2026-05-13"
+    thesis: >
+      Bitcoin's fixed supply, halving cycle, institutional adoption via spot ETFs,
+      and growing sovereign/corporate treasury demand create a persistent scarcity
+      premium. MSTR provides leveraged equity exposure to this thesis.
+    bull_case: "ETF inflows accelerate; sovereign adoption expands; halving supply shock filters through"
+    bear_case: "Regulatory shock; ETF outflows; BTC fails key technical levels; thesis becomes too crowded"
+    confidence_score: 60  # PLACEHOLDER — [LIVE DATA REQUIRED]
+    key_drivers:
+      - "ETF daily flow trend"
+      - "BTC dominance"
+      - "Stablecoin supply growth"
+      - "Macro liquidity"
+    invalidation: "BTC breaks 200d MA on volume; sustained ETF outflows > 2 weeks; regulatory ban in major market"
+    review_trigger: "BTC weekly close below key support; ETF outflow trend reversal"
+    crowding_check: "Becoming more consensus — monitor fund manager surveys"
+    next_review_date: "2026-05-20"
+
+  - id: "THESIS-003"
+    name: "Gold Monetary Scarcity Hedge"
+    related_positions: [GLD]
+    lifecycle_state: Confirming
+    time_horizon: Structural
+    opened_date: "2026-05-13"
+    thesis: >
+      Gold is in a structural bull market driven by central bank demand diversification
+      away from USD reserves, currency debasement risk, and falling real rates.
+      The 40-year consolidation breakout thesis is being validated.
+    bull_case: "Real rates fall; dollar weakens; CB buying accelerates; DM debt concerns grow"
+    bear_case: "Real rates rise sharply; dollar strengthens; CB selling; BTC captures monetary premium"
+    confidence_score: 65  # PLACEHOLDER — [LIVE DATA REQUIRED]
+    key_drivers:
+      - "Real rates (TIPS)"
+      - "DXY direction"
+      - "Central bank gold demand"
+      - "Gold vs M2 ratio"
+    invalidation: "Real rates rise > 2% and sustain; gold loses 200d MA; CB demand reverses"
+    review_trigger: "Real rates spike; gold fails at key support after testing"
+    crowding_check: "Gold becoming consensus — monitor CFTC COT positioning"
+    next_review_date: "2026-05-20"
+
+  - id: "THESIS-004"
+    name: "Uranium Nuclear Renaissance"
+    related_positions: [URNM]
+    lifecycle_state: Emerging
+    time_horizon: Structural
+    opened_date: "2026-05-13"
+    thesis: >
+      Uranium is in a structural supply deficit as utilities sign long-term contracts
+      for new nuclear capacity driven by datacenter power demand, decarbonization,
+      and energy security policy. Supply response takes years.
+    bull_case: "AI datacenter nuclear deals accelerate; utility uncovered requirements grow; Kazakh supply disrupted"
+    bear_case: "Nuclear projects cancelled; new mines approved faster than expected; energy demand misses"
+    confidence_score: 55  # PLACEHOLDER — [LIVE DATA REQUIRED]
+    key_drivers:
+      - "Utility uncovered requirements"
+      - "New reactor announcements"
+      - "Kazakh supply stability"
+      - "Spot vs term price spread"
+    invalidation: "Major wave of nuclear cancellations; Kazakh supply normalized; spot price collapses below production cost"
+    review_trigger: "Significant policy reversal on nuclear in EU/US; spot price sustained drop > 20%"
+    crowding_check: "Still under-followed; not yet crowded"
+    next_review_date: "2026-05-20"
+
+invalidated_theses: []

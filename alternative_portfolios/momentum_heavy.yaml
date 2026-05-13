@@ -1,0 +1,46 @@
+# Alternative Portfolio: Momentum Heavy
+# Pure momentum — follow what's working, exit what's not.
+# Advisory only. Performance: [SIMULATED - Phase 2+]
+
+id: momentum_heavy
+name: "Momentum Heavy Portfolio"
+inception_date: "2026-05-13"
+starting_capital: 100000
+philosophy: >
+  Own what is working. Exit what is not. No thesis attachment.
+  Positions are held as long as momentum is positive and exited when momentum fades.
+  Rebalances more frequently than the main portfolio.
+
+initial_allocations:
+  - ticker: QQQ
+    name: "Nasdaq-100 ETF"
+    pct: 35
+    rationale: "Strongest momentum in tech/AI cycle"
+  - ticker: MSTR
+    name: "MicroStrategy"
+    pct: 20
+    rationale: "BTC momentum play"
+  - ticker: GLD
+    name: "Gold"
+    pct: 20
+    rationale: "Gold momentum has been strong"
+  - ticker: SPY
+    name: "S&P 500 ETF"
+    pct: 15
+    rationale: "Broad equity momentum participation"
+  - ticker: STRC_PROXY
+    name: "Cash / STRC"
+    pct: 10
+    rationale: "Buffer for rapid reallocation"
+
+momentum_rules:
+  entry: "Asset in top quartile of 3-month and 6-month returns vs universe"
+  exit: "Asset drops below median 3-month return for 4+ consecutive weeks"
+  rebalance_frequency: biweekly
+  max_single_position: 40
+  min_cash_reserve: 10
+
+performance: "[SIMULATED - Phase 2+]"
+purpose: >
+  Test if pure momentum beats the CIO's thesis-driven approach.
+  Momentum portfolios tend to outperform in trending markets but suffer in reversals.

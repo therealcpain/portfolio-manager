@@ -1,0 +1,117 @@
+# Thesis Lifecycle Schema
+# Every position's investment thesis must be tracked through this lifecycle.
+
+lifecycle_states:
+
+  Emerging:
+    description: "Thesis is forming. Early evidence visible but not confirmed."
+    characteristics:
+      - "1–2 agents have identified the opportunity"
+      - "Macro or technical setup beginning to align"
+      - "Sentiment not yet aware of the thesis"
+    recommended_sizing: "Small — 1/3 to 1/2 of target position"
+    monitoring_frequency: weekly
+    upgrade_conditions:
+      - "3+ agents confirm thesis"
+      - "Technical setup confirms (price action + volume)"
+      - "Macro regime aligned"
+
+  Confirming:
+    description: "Thesis has foundational evidence. Building toward high conviction."
+    characteristics:
+      - "3+ agents in agreement"
+      - "Technical setup partially confirmed"
+      - "Early price action supporting thesis"
+    recommended_sizing: "Medium — 1/2 to 3/4 of target position"
+    monitoring_frequency: weekly
+    upgrade_conditions:
+      - "Strong agent consensus (4+)"
+      - "Technical breakout confirmed with volume"
+      - "Catalyst event approaching or passed"
+    downgrade_conditions:
+      - "Technical breakdown without macro explanation"
+      - "2+ agents withdraw support"
+
+  High Conviction:
+    description: "Thesis is fully confirmed. Maximum authorized sizing appropriate."
+    characteristics:
+      - "Strong multi-agent consensus"
+      - "Technical structure clean (trend, support, volume)"
+      - "Macro regime supportive"
+      - "Catalyst visible"
+    recommended_sizing: "Full target position or above if asymmetry is exceptional"
+    monitoring_frequency: daily
+    upgrade_conditions: "N/A — this is peak state"
+    downgrade_conditions:
+      - "Technical divergence or breakdown begins"
+      - "Macro regime shift"
+      - "Sentiment becoming crowded"
+      - "Thesis catalyst passes without price action"
+
+  Crowded:
+    description: "Thesis is correct but widely known. Asymmetry is reduced."
+    characteristics:
+      - "Consensus trade — everyone is long"
+      - "High short interest has reversed (bears covered)"
+      - "Media/narrative saturation"
+      - "Retail flows into the trade"
+    recommended_sizing: "Reduce to 50–75% of peak position"
+    monitoring_frequency: daily
+    action: "Begin gradual trimming. Require fresh catalyst to re-add."
+    downgrade_conditions:
+      - "Sentiment euphoria readings"
+      - "Options skew extreme bullish"
+
+  Distribution Risk:
+    description: "Smart money appears to be selling into retail buying. Exit plan active."
+    characteristics:
+      - "Price still elevated but volume is distribution-pattern"
+      - "Insiders selling"
+      - "Fund manager positioning at maximum"
+      - "New ETFs or products launching in the theme"
+    recommended_sizing: "25–50% of peak position. Trim on bounces."
+    monitoring_frequency: daily
+    action: "Prepare systematic exit. Define specific exit triggers."
+    upgrade_path: "Requires reset to new technical base + sentiment washout"
+
+  Breakdown Risk:
+    description: "Technical or fundamental breakdown in progress."
+    characteristics:
+      - "Price breaking key support levels"
+      - "Volume confirming breakdown"
+      - "Thesis catalysts failing"
+      - "Multi-agent concern rising"
+    recommended_sizing: "Minimal — 10–20% max. Hedge with puts if available."
+    monitoring_frequency: daily
+    action: "Actively exit. Only remain if specific recovery trigger is defined."
+    downgrade_conditions:
+      - "Thesis invalidation condition triggered"
+
+  Invalidated:
+    description: "Original thesis is no longer valid. Exit immediately."
+    characteristics:
+      - "Invalidation condition explicitly triggered"
+      - "Thesis fundamentally broken (not just price down)"
+      - "Majority of agents withdraw support"
+    recommended_sizing: "Zero. Exit fully."
+    action: "Exit position. Document lessons in Portfolio Historian."
+    recovery_path: "Thesis must rebuild from Emerging state with new evidence. Cannot skip states."
+
+# Thesis Record Schema
+thesis_record_fields:
+  - id: "Unique identifier (THESIS-XXX)"
+  - name: "Short descriptive name"
+  - related_positions: "List of tickers"
+  - lifecycle_state: "One of the 7 states above"
+  - time_horizon: "Tactical | Strategic | Structural"
+  - opened_date: "YYYY-MM-DD"
+  - thesis: "2–4 sentence description of the thesis as stated at initiation"
+  - bull_case: "Best case scenario"
+  - bear_case: "Worst case scenario (specific, not generic)"
+  - confidence_score: "1–100"
+  - key_drivers: "List of 3–5 factors that determine thesis validity"
+  - invalidation: "Specific, observable condition that ends the thesis"
+  - review_trigger: "What would cause an unscheduled review"
+  - crowding_check: "Current crowding assessment"
+  - next_review_date: "YYYY-MM-DD"
+  - historical_lessons: "What past similar theses teach us"

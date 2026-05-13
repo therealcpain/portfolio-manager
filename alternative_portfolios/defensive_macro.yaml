@@ -1,0 +1,47 @@
+# Alternative Portfolio: Defensive Macro
+# Full macro defense — capital preservation first, participation second.
+# Advisory only. Performance: [SIMULATED - Phase 2+]
+
+id: defensive_macro
+name: "Defensive Macro Portfolio"
+inception_date: "2026-05-13"
+starting_capital: 100000
+philosophy: >
+  Protect capital in a late-cycle or uncertain macro regime. Deploy only when
+  macro signals are clearly risk-on. Default to STRC/money market and hard assets.
+  No equity beta unless macro is clearly supportive.
+
+allocations:
+  - ticker: STRC_PROXY
+    name: "STRC / Money Market"
+    pct: 40
+    rationale: "Capital preservation; earning yield while waiting for macro clarity"
+  - ticker: GLD
+    name: "SPDR Gold Shares"
+    pct: 30
+    rationale: "Macro hedge; works in stagflation and deflationary shock"
+  - ticker: SLV
+    name: "iShares Silver Trust"
+    pct: 10
+    rationale: "Gold complement; monetary + industrial"
+  - ticker: TLT
+    name: "iShares 20+ Year Treasury ETF"
+    pct: 10
+    rationale: "Deflation hedge; only valid if recession risk is primary scenario"
+    note: "Reduce/exit if inflation re-accelerates"
+  - ticker: SPY
+    name: "S&P 500 ETF (minimal)"
+    pct: 10
+    rationale: "Minimal equity participation — only to avoid full underperformance in risk-on"
+
+constraints:
+  rebalance_frequency: monthly
+  max_equity_pct: 20
+  max_crypto_adjacent_pct: 0
+  defensive_reserve_minimum: 35
+
+performance: "[SIMULATED - Phase 2+]"
+purpose: >
+  Compare to main CIO portfolio in risk-off regimes.
+  If this outperforms significantly, the CIO is being too aggressive.
+  If this underperforms in a bull market, the cost of defense is quantified.

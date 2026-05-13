@@ -1,0 +1,143 @@
+# Confidence Score Schema
+# Every recommendation must include a confidence score 1–100.
+# Scores are not arbitrary — they reflect specific factor weights.
+
+scale:
+  1-20: "Very Low — High uncertainty, multiple conflicting signals, no action without clear catalyst"
+  21-40: "Low — Thesis exists but unconfirmed; diagnose cause before acting"
+  41-60: "Moderate — Reasonable thesis with some confirmation; standard sizing"
+  61-75: "Moderately High — Good multi-agent consensus; above-average sizing appropriate"
+  76-90: "High — Strong conviction; maximum standard sizing appropriate"
+  91-100: "Very High — Exceptional asymmetry and confirmation; can exceed bucket targets"
+
+# ─────────────────────────────────────────
+# Confidence Factors (Portfolio Level)
+# ─────────────────────────────────────────
+portfolio_confidence_factors:
+
+  macro_alignment:
+    weight: high
+    questions:
+      - "Is the macro regime clearly supportive of the current allocation?"
+      - "Are liquidity conditions aligned with the portfolio's risk posture?"
+      - "Is the Fed stance consistent with the portfolio's assumptions?"
+    scoring:
+      - "Strong alignment = +15 to +20 to score"
+      - "Neutral = +5 to +10"
+      - "Misalignment = -10 to -20"
+
+  technical_confirmation:
+    weight: medium
+    questions:
+      - "Are key positions in confirmed technical uptrends?"
+      - "Are there any active RSI divergences at resistance?"
+      - "Are breakouts volume-confirmed?"
+    scoring:
+      - "All positions technically confirmed = +10 to +15"
+      - "Mixed = +0 to +5"
+      - "Active technical breakdowns = -10 to -15"
+      - "RSI divergence at resistance = -5 (mandatory per investor preference)"
+
+  thesis_lifecycle_health:
+    weight: high
+    questions:
+      - "What % of the portfolio is in Emerging or Confirming state (vs High Conviction)?"
+      - "Are any theses at Distribution Risk or Breakdown Risk?"
+      - "Have any theses been invalidated without exiting?"
+    scoring:
+      - "Majority in High Conviction = +15"
+      - "Mix of Confirming and High Conviction = +8"
+      - "Significant Emerging positions = -5"
+      - "Any Invalidated positions still held = -20 (critical failure)"
+
+  agent_consensus:
+    weight: medium
+    questions:
+      - "What is the ratio of agents supporting vs opposing major positions?"
+      - "Are Bear Case and Risk Officer concerns being adequately addressed?"
+      - "Is the Meta-Philosophy Auditor's challenge answered?"
+    scoring:
+      - "Strong consensus (12+ of 17 agents aligned) = +10"
+      - "Majority (9–11 aligned) = +5"
+      - "Divided (6–8 aligned) = -5"
+      - "3+ agents strongly opposing any major position = -15"
+
+  risk_profile:
+    weight: medium
+    questions:
+      - "Is options theta drag within acceptable bounds?"
+      - "Is concentration risk at an acceptable level?"
+      - "Are there any catastrophic risk flags active?"
+    scoring:
+      - "No risk flags = +10"
+      - "Minor flags only = +5"
+      - "Moderate flags = -5"
+      - "Any catastrophic flag active = -20"
+
+  sentiment_alignment:
+    weight: low
+    questions:
+      - "Is sentiment supportive of the positions (not too extreme in either direction)?"
+      - "Are any positions in euphoric/crowded sentiment territory?"
+    scoring:
+      - "Sentiment supportive and not extreme = +5"
+      - "Neutral = +0"
+      - "Euphoria in major positions = -5 to -10"
+      - "Panic/capitulation opportunity visible = +5 (contrarian)"
+
+# ─────────────────────────────────────────
+# Confidence Adjustments (Automatic)
+# ─────────────────────────────────────────
+automatic_adjustments:
+
+  strong_dissent_penalty:
+    condition: "3 or more agents strongly oppose a major recommendation"
+    adjustment: "-15 minimum"
+    action: "Reduce sizing. State what would resolve disagreement."
+
+  invalidation_held_penalty:
+    condition: "A position's invalidation condition has been triggered but position is still held"
+    adjustment: "-20"
+    action: "Exit immediately or document explicit override rationale."
+
+  rsi_divergence_flag:
+    condition: "Any major position has RSI divergence at resistance"
+    adjustment: "-5 per occurrence"
+    action: "Trim, wait, or require confirmation per investor preference."
+
+  no_live_data_penalty:
+    condition: "Phase 1 — no live market data available"
+    adjustment: "Cap at 65 maximum"
+    note: "Cannot achieve high confidence on stale/placeholder data."
+
+# ─────────────────────────────────────────
+# Low Confidence Protocol
+# ─────────────────────────────────────────
+low_confidence_protocol:
+  threshold: 40
+  steps:
+    1: "Diagnose WHY confidence is low. Is it uncertainty, conflicting signals, or genuine risk?"
+    2: "If uncertainty is temporary (data pending, event upcoming) — wait, don't act."
+    3: "If uncertainty is fundamental (thesis unclear, agents disagree without resolution) — reduce exposure."
+    4: "Default action at < 40: move incremental capital toward STRC / money market / highest-conviction core only."
+    5: "Do NOT interpret low confidence as always defensive — sometimes low confidence just means wait."
+
+# ─────────────────────────────────────────
+# Position-Level Confidence Record
+# ─────────────────────────────────────────
+position_confidence_record:
+  fields:
+    - ticker: "Asset"
+    - confidence_score: "1–100"
+    - macro_alignment_score: "1–100"
+    - technical_confirmation_score: "1–100"
+    - thesis_lifecycle_score: "1–100"
+    - agent_consensus_score: "1–100"
+    - risk_score: "1–100"
+    - key_confidence_drivers: "List"
+    - key_concerns: "List"
+    - contrarian_view: "What the bear case says"
+    - what_would_raise_score: "Specific conditions"
+    - what_would_lower_score: "Specific conditions"
+    - invalidation_condition: "Observable condition that ends the trade"
+    - last_updated: "YYYY-MM-DD"

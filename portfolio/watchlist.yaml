@@ -1,0 +1,102 @@
+# Watchlist — Advisory Model
+# Assets being monitored for potential addition. Not yet in portfolio.
+# Advisory only.
+
+metadata:
+  as_of_date: "2026-05-13"
+  note: "PHASE 1 — Illustrative watchlist. Update with live thesis development."
+
+# Status options:
+# Monitoring     — basic watch, no near-term catalyst
+# Thesis Building — active research, thesis forming
+# Awaiting Entry  — thesis confirmed, waiting for technical setup
+# Ready to Act   — technical setup confirmed, ready to initiate position
+
+equity_and_etf:
+
+  - ticker: NVDA
+    name: "NVIDIA Corporation"
+    sector: Semiconductors / AI Infrastructure
+    bucket_target: core_structural
+    status: Monitoring
+    thesis_summary: >
+      AI compute scarcity; dominant GPU architecture; H100/B100 allocation backlog.
+      Scarcity premium in leading AI training infrastructure.
+    watch_trigger: "Pullback to 50d MA with RSI reset to 50; earnings revision trend positive"
+    concern: "Stretched valuation; high expectations priced in; China export restrictions risk"
+    confidence: 55  # PLACEHOLDER
+
+  - ticker: XLE
+    name: "Energy Select Sector SPDR"
+    sector: Energy
+    bucket_target: tactical_strategic
+    status: Monitoring
+    thesis_summary: >
+      Energy capex famine of 2015–2022 creating long-term supply lag.
+      Tactical opportunity if oil demand surprises to upside.
+    watch_trigger: "Oil sustained above $85/bbl; XLE breakout above resistance with volume"
+    concern: "Macro demand uncertainty; EV transition headwinds"
+    confidence: 45  # PLACEHOLDER
+
+  - ticker: COPX
+    name: "Global X Copper Miners ETF"
+    sector: Copper / Materials
+    bucket_target: tactical_strategic
+    status: Thesis Building
+    thesis_summary: >
+      Electrification demand (EVs, grid, solar, wind) vs. challenged supply side.
+      Long lead times for new copper mines. Structural demand story.
+    watch_trigger: "China demand recovery confirmation; copper price breakout above $5/lb"
+    concern: "China demand risk; copper not scarce in same way as gold/uranium"
+    confidence: 45  # PLACEHOLDER
+
+  - ticker: IBIT
+    name: "iShares Bitcoin Trust ETF"
+    sector: Crypto ETF
+    bucket_target: core_structural
+    status: Awaiting Entry
+    thesis_summary: >
+      Direct BTC exposure via ETF inside Roth IRA. Complement to MSTR.
+      Use when BTC thesis is high conviction but equity leverage (MSTR) feels excessive.
+    watch_trigger: "BTC technical confirmation; IBIT inflow trend positive; macro risk-on"
+    concern: "Already expressing BTC via MSTR; avoid over-concentration in BTC theme"
+    confidence: 60  # PLACEHOLDER
+
+  - ticker: SMH
+    name: "VanEck Semiconductor ETF"
+    sector: Semiconductors
+    bucket_target: tactical_strategic
+    status: Monitoring
+    thesis_summary: >
+      Semiconductor cycle recovery; AI-driven demand for logic and memory.
+      Diversified exposure vs single-name risk.
+    watch_trigger: "Semiconductor book-to-bill ratio improving; AI capex confirmed growing"
+    concern: "Geopolitical risk (Taiwan); high valuations; cyclical nature"
+    confidence: 50  # PLACEHOLDER
+
+crypto_adjacent:
+
+  - ticker: SMLR
+    name: "Semler Scientific (BTC Treasury)"
+    type: btc_treasury_company
+    bucket_target: experimental
+    status: Monitoring
+    thesis_summary: "Small-cap BTC treasury company; high BTC leverage; early-stage MSTR analog"
+    watch_trigger: "BTC thesis high conviction; SMLR premium to NAV reasonable"
+    concern: "Illiquid; high risk; small cap"
+    confidence: 35  # PLACEHOLDER
+
+prediction_markets:
+  - name: "Fed Rate Decision — Next Meeting"
+    platform: Polymarket / Kalshi
+    status: Monitoring
+    use_case: "Macro hedge and sentiment read"
+    note: "Add if asymmetric hedge opportunity appears before Fed meeting"
+
+options_on_watchlist:
+  - description: "SPY Calls — 3–6 months out; ATM or slight OTM"
+    trigger: "Macro regime risk-on confirmed + technical breakout + RSI not overbought"
+    note: "Phase 3 — requires live options chain data"
+  - description: "QQQ Puts — downside hedge"
+    trigger: "VIX spike; RSI divergence at multi-month high; macro deteriorating"
+    note: "Phase 3 — requires live options chain data"

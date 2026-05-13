@@ -1,0 +1,29 @@
+# Manual Agent Inputs — Phase 1
+# Human investor can provide qualitative inputs that supplement the quantitative data.
+# These are the "soft" inputs that agents use when live data is unavailable.
+
+metadata:
+  as_of_date: "2026-05-13"
+  note: "Phase 1 — manual inputs. Agents will read these when live data is absent."
+
+investor_inputs:
+  current_conviction_level: "[MANUAL INPUT REQUIRED]"  # High / Medium / Low
+  biggest_concern_today: "[MANUAL INPUT REQUIRED]"
+  biggest_opportunity_today: "[MANUAL INPUT REQUIRED]"
+  recent_news_affecting_portfolio: "[MANUAL INPUT REQUIRED]"
+  override_signals: []  # List any decisions investor wants to override
+
+qualitative_macro_read:
+  narrative: "[MANUAL INPUT REQUIRED]"
+  regime_guess: "[MANUAL INPUT REQUIRED]"
+  biggest_macro_risk: "[MANUAL INPUT REQUIRED]"
+
+qualitative_technical_read:
+  spy_trend: "[MANUAL INPUT REQUIRED]"  # Uptrend / Downtrend / Sideways
+  btc_trend: "[MANUAL INPUT REQUIRED]"
+  gold_trend: "[MANUAL INPUT REQUIRED]"
+
+qualitative_sentiment_read:
+  current_market_mood: "[MANUAL INPUT REQUIRED]"  # Fear / Greed / Neutral
+  crypto_mood: "[MANUAL INPUT REQUIRED]"
+  contrarian_opportunity: "[MANUAL INPUT REQUIRED]"

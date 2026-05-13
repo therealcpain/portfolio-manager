@@ -1,0 +1,145 @@
+# Hedge Fund OS — Master Configuration
+# All values are advisory parameters. No live trading.
+
+system:
+  name: "Hedge Fund OS"
+  version: "0.1.0"
+  phase: 1
+  advisory_only: true
+  disclaimer: "All outputs are advisory model recommendations requiring human review. Not financial advice."
+
+portfolio:
+  starting_capital: 100000
+  currency: USD
+  account_type: Roth IRA
+  owner_age: 40
+  risk_tolerance: moderately_high
+
+  # Bucket targets (%)
+  buckets:
+    core_structural:
+      target_min: 50
+      target_max: 75
+    tactical_strategic:
+      target_min: 10
+      target_max: 30
+    options_convexity:
+      target_min: 10
+      target_max: 20
+      explosive_asymmetry_max: 35
+    experimental:
+      target_max: 20
+    defensive_reserve:
+      target_min: 0
+      target_max: 40
+      preferred_instrument: STRC  # or money market equivalent
+
+  # Hard constraints
+  constraints:
+    allow_margin: false
+    allow_short_selling: false
+    allow_0dte_options: false
+    allow_option_spreads: false  # revisit when explicitly requested
+    allow_fx_trading: false
+    allow_low_liquidity_options: false
+    preferred_option_duration_days_min: 14
+    preferred_option_duration_days_max: 180
+    crypto_on_chain_focus: "BTC and top-dog assets"
+
+  # Turnover discipline
+  turnover:
+    monitor_frequency: daily
+    allocation_change_frequency: weekly_to_monthly
+    options_change_frequency: daily_allowed
+    require_action_justification: true
+
+optimization:
+  primary_objectives:
+    - asymmetry
+    - liquidity_adjusted_returns
+    - macro_alignment
+    - technical_confirmation
+    - scarcity_exposure
+    - sentiment_contrarian_opportunity
+    - long_term_portfolio_value
+  valuation_weight: secondary
+  preferred_pe_metric: forward_pe
+
+confidence:
+  scale_min: 1
+  scale_max: 100
+  low_confidence_threshold: 40
+  low_confidence_action: "Diagnose cause. If unresolved, move toward STRC/money market/highest-conviction core."
+  strong_dissent_threshold: 3  # agents strongly disagreeing triggers confidence reduction
+
+thesis_lifecycle:
+  states:
+    - Emerging
+    - Confirming
+    - High Conviction
+    - Crowded
+    - Distribution Risk
+    - Breakdown Risk
+    - Invalidated
+
+reporting:
+  daily_report: true
+  weekly_report: true
+  monthly_benchmark_review: true
+  respect_market_calendar: true
+  crypto_24_7: true
+  prediction_markets_extended_hours: true
+
+benchmarks:
+  primary:
+    - SPY
+    - QQQ
+    - BTC
+    - "60/40"
+  secondary:
+    - scarce_assets_composite
+    - strc_money_market
+    - agent_alternative_portfolios
+
+alternative_portfolios:
+  - main_cio
+  - aggressive_scarcity
+  - defensive_macro
+  - momentum_heavy
+  - technical_confirmation_only
+  - contrarian_sentiment
+  - crypto_heavy
+  - commodities_scarcity
+  - ai_structural_change
+  - strc_defensive
+
+data:
+  phase_3_sources:
+    - yfinance  # free equity/ETF data
+    - coingecko_api  # free crypto data
+    - fred_api  # free macro data (Fed, M2, rates)
+  phase_4_sources:
+    - options_chain_provider: TBD
+    - sentiment_provider: TBD
+    - onchain_provider: TBD
+    - prediction_market_provider: TBD
+
+agents:
+  committee:
+    - cio
+    - macro_strategist
+    - scarcity_strategist
+    - technology_structural_change
+    - technical_chart_expert
+    - options_specialist
+    - momentum_trader
+    - crypto_strategist
+    - commodity_specialist
+    - valuation_analyst
+    - sentiment_analyst
+    - bear_case_analyst
+    - risk_officer
+    - portfolio_historian
+    - benchmark_analyst
+    - psychological_agent
+    - meta_philosophy_auditor

@@ -1,0 +1,46 @@
+# Alternative Portfolio: Crypto Heavy
+# Maximum crypto-adjacent exposure inside Roth IRA constraints.
+# Advisory only. Performance: [SIMULATED - Phase 2+]
+
+id: crypto_heavy
+name: "Crypto Heavy Portfolio"
+inception_date: "2026-05-13"
+starting_capital: 100000
+philosophy: >
+  Maximum Roth IRA crypto exposure via ETFs and BTC treasury companies.
+  Test whether the CIO's diversification away from crypto is adding or destroying value.
+  Note: no direct on-chain crypto in Roth IRA — only ETFs and crypto equities.
+
+allocations:
+  - ticker: MSTR
+    name: "MicroStrategy (BTC Treasury)"
+    pct: 40
+    rationale: "Maximum BTC leverage via equity"
+  - ticker: IBIT
+    name: "iShares Bitcoin Trust ETF"
+    pct: 25
+    rationale: "Direct BTC ETF exposure"
+  - ticker: COIN
+    name: "Coinbase Global"
+    pct: 15
+    rationale: "Crypto infrastructure equity; leveraged to crypto volumes and BTC price"
+  - ticker: CLSK
+    name: "CleanSpark (BTC Miner)"
+    pct: 10
+    rationale: "BTC mining equity; amplified BTC exposure + energy efficiency thesis"
+  - ticker: STRC_PROXY
+    name: "Cash / STRC"
+    pct: 10
+    rationale: "Buffer; reduce crypto exposure rapidly if thesis fails"
+
+constraints:
+  no_direct_onchain_crypto: true  # Roth IRA constraint
+  max_single_crypto_equity: 45
+  rebalance_frequency: monthly
+  exit_trigger: "BTC breaks 200d MA on volume — move to STRC"
+
+performance: "[SIMULATED - Phase 2+]"
+purpose: >
+  Compare to main CIO portfolio. If crypto-heavy outperforms significantly in a BTC bull,
+  the CIO is under-sizing crypto. If it drawdowns 60%+ in a BTC bear while CIO loses 30%,
+  the CIO's diversification is well-justified.

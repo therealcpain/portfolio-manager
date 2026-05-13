@@ -1,0 +1,67 @@
+# Target Portfolio — Advisory Model
+# This is where the CIO wants the portfolio to be, pending thesis confirmation.
+# Advisory only. Updated by CIO agent after each committee session.
+
+metadata:
+  as_of_date: "2026-05-13"
+  horizon: Strategic  # Tactical / Strategic / Structural
+  note: "PHASE 1 — Illustrative targets only. Populate with live CIO recommendations in Phase 2+."
+
+target_allocations:
+  core_structural:
+    target_pct: 65
+    positions:
+      - ticker: SPY
+        target_pct: 20
+        rationale: "Core broad equity; regime-dependent; reduce if macro turns"
+      - ticker: QQQ
+        target_pct: 15
+        rationale: "AI/tech structural; reduce if earnings revisions deteriorate"
+      - ticker: MSTR
+        target_pct: 12
+        rationale: "BTC leverage; target higher when BTC technical setup improves"
+      - ticker: GLD
+        target_pct: 10
+        rationale: "Monetary hedge; structural; target higher if real rates fall further"
+      - ticker: URNM
+        target_pct: 8
+        rationale: "Uranium structural; emerging thesis; build gradually"
+
+  tactical_strategic:
+    target_pct: 15
+    positions:
+      - ticker: STRC
+        target_pct: 10
+        rationale: "Deployed cash; replace with tactical ideas as they confirm"
+      - ticker: TBD_MOMENTUM_1
+        target_pct: 5
+        rationale: "Placeholder for next confirmed momentum opportunity"
+
+  options_convexity:
+    target_pct: 15
+    positions:
+      - description: "SPY or QQQ calls — add when macro + technical confirm risk-on"
+        target_pct: 10
+        note: "Do not open until technical confirmation in Phase 3+"
+      - description: "Downside hedge puts — add if VIX spikes or regime deteriorates"
+        target_pct: 5
+        note: "Conditional — only if macro uncertainty rises"
+
+  experimental:
+    target_pct: 10
+    positions:
+      - description: "AI infrastructure name (to be identified in Phase 2)"
+        target_pct: 5
+      - description: "High-conviction altcoin with on-chain fundamentals (separate portfolio context)"
+        target_pct: 5
+        note: "Roth IRA exposure only via crypto ETF or equity; no direct on-chain"
+
+  defensive_reserve:
+    target_pct: 0
+    note: "No defensive reserve target at start. Will increase if macro deteriorates."
+
+notes:
+  - "Targets are directional, not rigid. CIO may deviate based on agent consensus."
+  - "All positions require technical confirmation before full target is reached."
+  - "Options targets activate only when asymmetry is clearly superior to shares."
+  - "Experimental positions may move to core if thesis strengthens substantially."

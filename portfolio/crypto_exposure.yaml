@@ -1,0 +1,46 @@
+# Crypto Exposure — Roth IRA Only
+# Advisory only. This file tracks Roth IRA crypto-adjacent positions.
+# IMPORTANT: On-chain crypto (BTC, ETH, altcoins held in wallets) is a SEPARATE portfolio.
+# This file covers only: BTC ETFs, BTC treasury companies, crypto-adjacent equities.
+
+metadata:
+  as_of_date: "2026-05-13"
+  note: "PHASE 1 — Illustrative. On-chain portfolio is tracked separately."
+
+roth_ira_crypto_adjacent:
+
+  positions:
+    - ticker: MSTR
+      name: "MicroStrategy"
+      type: btc_treasury_company
+      exposure_type: leveraged_btc_equity
+      market_value: 10000  # PLACEHOLDER
+      portfolio_pct: 10.0  # PLACEHOLDER
+      btc_exposure_proxy: "~1.5–2x BTC price sensitivity due to leverage on balance sheet"
+      thesis_lifecycle: Confirming
+      note: "Primary BTC expression in Roth IRA"
+
+    - ticker: IBIT
+      name: "iShares Bitcoin Trust ETF"
+      type: btc_etf
+      exposure_type: direct_btc_price
+      market_value: 0  # Not yet in portfolio
+      portfolio_pct: 0.0
+      btc_exposure_proxy: "~1x BTC price sensitivity"
+      thesis_lifecycle: Awaiting Entry
+      note: "Will add when BTC technical setup confirms and MSTR concentration risk warrants diversification"
+
+  total_roth_ira_btc_adjacent_value: 10000  # PLACEHOLDER
+  total_roth_ira_btc_adjacent_pct: 10.0  # PLACEHOLDER
+
+# On-chain portfolio context (for correlation awareness only)
+# Decisions for on-chain holdings are NOT made by this system.
+on_chain_portfolio_context:
+  note: >
+    The investor holds multiple BTC on-chain (separate from Roth IRA).
+    This context informs correlation risk.
+    The Roth IRA should NOT double-count crypto exposure when sizing BTC-adjacent positions.
+    When on-chain BTC is at full conviction sizing, additional Roth IRA BTC-adjacent exposure
+    should be moderate unless asymmetry is exceptional.
+  on_chain_assets_reported: "[INVESTOR INPUT REQUIRED]"
+  last_reported_date: "[INVESTOR INPUT REQUIRED]"

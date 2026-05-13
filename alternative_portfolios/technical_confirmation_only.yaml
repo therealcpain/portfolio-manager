@@ -1,0 +1,51 @@
+# Alternative Portfolio: Technical Confirmation Only
+# No position initiated without clear technical setup. Fundamental thesis is secondary.
+# Advisory only. Performance: [SIMULATED - Phase 2+]
+
+id: technical_confirmation_only
+name: "Technical Confirmation Only Portfolio"
+inception_date: "2026-05-13"
+starting_capital: 100000
+philosophy: >
+  Only own assets with confirmed technical uptrends. Exit on technical breakdown.
+  No holding "because the thesis is strong" through technical breakdown.
+  No adding "because it's cheap" without technical setup.
+
+entry_rules:
+  - "Price above 50d and 200d MA"
+  - "RSI between 45–70 (not overbought, not oversold)"
+  - "Volume confirming the trend (no low-volume breakouts)"
+  - "No RSI divergence at resistance"
+  - "Breakout held for 5+ trading days before adding"
+
+exit_rules:
+  - "Price closes below 50d MA for 3 consecutive days"
+  - "RSI breaks below 40 on daily chart"
+  - "Volume-confirmed breakdown through support"
+  - "200d MA violated on weekly close"
+
+current_positions_note: >
+  In Phase 1, positions are illustrative pending live technical data.
+  All position entries marked [LIVE DATA REQUIRED].
+
+initial_allocations_placeholder:
+  - ticker: SPY
+    pct: 30
+    technical_status: "[LIVE DATA REQUIRED]"
+  - ticker: QQQ
+    pct: 25
+    technical_status: "[LIVE DATA REQUIRED]"
+  - ticker: GLD
+    pct: 20
+    technical_status: "[LIVE DATA REQUIRED]"
+  - ticker: MSTR
+    pct: 15
+    technical_status: "[LIVE DATA REQUIRED]"
+  - ticker: STRC_PROXY
+    pct: 10
+    technical_status: "Always available as parking"
+
+performance: "[SIMULATED - Phase 2+]"
+purpose: >
+  Test if pure technical discipline outperforms the CIO's blend of fundamentals + technicals.
+  Reveals the cost of "fighting the tape" on fundamental conviction alone.

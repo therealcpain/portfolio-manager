@@ -1,0 +1,88 @@
+# Benchmark Configuration — Advisory Model
+# Advisory only. Performance data populated in Phase 2+.
+
+metadata:
+  as_of_date: "2026-05-13"
+  note: "PHASE 1 — Configuration only. Performance data: [SIMULATED - Phase 2+]"
+
+primary_benchmarks:
+
+  - id: SPY
+    name: "SPDR S&P 500 ETF"
+    type: equity_etf
+    purpose: "Core US equity baseline; minimum bar for equity-heavy portfolio"
+    data_source: yfinance  # Phase 3
+    weight_in_composite: 0.30
+
+  - id: QQQ
+    name: "Invesco Nasdaq-100 ETF"
+    type: equity_etf
+    purpose: "Tech/growth baseline; relevant when portfolio is AI/tech heavy"
+    data_source: yfinance
+    weight_in_composite: 0.20
+
+  - id: BTC
+    name: "Bitcoin"
+    type: crypto
+    purpose: "Scarcity/crypto baseline; relevant when BTC-adjacent exposure is significant"
+    data_source: yfinance  # BTC-USD
+    weight_in_composite: 0.20
+
+  - id: "60_40"
+    name: "60/40 Portfolio"
+    type: composite
+    purpose: "Traditional risk/return baseline; shows cost of active management"
+    composition:
+      SPY: 0.60
+      AGG: 0.40
+    data_source: yfinance
+    weight_in_composite: 0.15
+
+  - id: STRC_PROXY
+    name: "STRC / Money Market"
+    type: fixed_income_proxy
+    purpose: "Opportunity cost of cash / inaction baseline"
+    proxy_rate_source: "3-month T-bill rate (^IRX on yfinance)"
+    weight_in_composite: 0.15
+
+secondary_benchmarks:
+
+  - id: scarce_assets_composite
+    name: "Scarce Assets Composite"
+    type: composite
+    purpose: "Scarcity thesis baseline; would a simple equal-weight scarcity basket suffice?"
+    composition:
+      GLD: 0.25
+      BTC: 0.25
+      URA: 0.25
+      XLE: 0.25
+    rebalance_frequency: monthly
+    note: "URA proxy for uranium; XLE proxy for energy"
+
+  - id: barbell_composite
+    name: "Barbell Portfolio"
+    type: composite
+    purpose: "Asymmetric baseline; 50% safe + 50% highest conviction speculative"
+    composition:
+      STRC_PROXY: 0.50
+      BTC: 0.30
+      GLD: 0.20
+    rebalance_frequency: monthly
+
+performance_reporting:
+  periods:
+    - 1_week
+    - 1_month
+    - 3_months
+    - 6_months
+    - ytd
+    - since_inception
+  metrics:
+    - total_return
+    - annualized_return
+    - max_drawdown
+    - sharpe_ratio
+    - sortino_ratio
+    - beta_vs_spy
+    - alpha_vs_spy
+  inception_date: "2026-05-13"
