@@ -49,6 +49,7 @@ def record_recommendation(
     invalidation: str,
     target_zone: str = "",
     lead_agent: str = "cio",
+    regime: str = "unknown",
 ) -> None:
     """Record a new investment recommendation."""
     data = _load()
@@ -62,12 +63,14 @@ def record_recommendation(
         "invalidation": invalidation,
         "target_zone": target_zone,
         "lead_agent": lead_agent,
+        "regime": regime,
         "outcome": "Pending",
         "outcome_date": None,
         "outcome_return_pct": None,
         "outcome_notes": "",
         "benchmark_return_pct": None,
         "beat_benchmark": None,
+        "outcome_regime": None,
     }
     _save(data)
 
@@ -78,6 +81,7 @@ def record_vote(
     vote: str,
     confidence: int,
     rationale: str,
+    regime: str = "",
 ) -> None:
     """Record an agent's vote on a recommendation."""
     assert vote in VOTE_OPTIONS, f"Invalid vote: {vote}"
@@ -89,6 +93,7 @@ def record_vote(
         "vote": vote,
         "confidence": confidence,
         "rationale": rationale,
+        "regime": regime,
         "timestamp": datetime.now().isoformat(),
     })
     _save(data)
@@ -100,6 +105,7 @@ def resolve_outcome(
     return_pct: float,
     benchmark_return_pct: float,
     notes: str = "",
+    outcome_regime: str = "",
 ) -> None:
     """Resolve the outcome of a recommendation once enough time has passed."""
     assert outcome in OUTCOME_OPTIONS
@@ -113,11 +119,15 @@ def resolve_outcome(
     rec["benchmark_return_pct"] = round(benchmark_return_pct, 2)
     rec["beat_benchmark"] = return_pct > benchmark_return_pct
     rec["outcome_notes"] = notes
+    rec["outcome_regime"] = outcome_regime or rec.get("regime", "")
     _save(data)
 
 
-def get_agent_scorecard(agent: str) -> dict:
-    """Compute scorecard metrics for one agent from resolved votes."""
+def get_agent_scorecard(agent: str, regime_filter: str = "") -> dict:
+    """Compute scorecard metrics for one agent from resolved votes.
+
+    Pass regime_filter to restrict scoring to votes made during a specific market regime.
+    """
     data = _load()
     agent_votes = [v for v in data["votes"] if v["agent"] == agent]
     resolved = {
@@ -132,6 +142,9 @@ def get_agent_scorecard(agent: str) -> dict:
     for v in agent_votes:
         rec = resolved.get(v["rec_id"])
         if rec is None:
+            continue
+        vote_regime = v.get("regime") or rec.get("regime", "")
+        if regime_filter and vote_regime != regime_filter:
             continue
         total += 1
         outcome = rec["outcome"]
@@ -152,7 +165,7 @@ def get_agent_scorecard(agent: str) -> dict:
     avg_win = sum(returns_when_correct) / len(returns_when_correct) if returns_when_correct else 0.0
     avg_loss = sum(returns_when_incorrect) / len(returns_when_incorrect) if returns_when_incorrect else 0.0
 
-    return {
+    result = {
         "agent": agent,
         "total_votes": total,
         "correct": correct,
@@ -161,8 +174,12 @@ def get_agent_scorecard(agent: str) -> dict:
         "avg_return_when_correct": round(avg_win, 2),
         "avg_return_when_incorrect": round(avg_loss, 2),
         "beat_benchmark_count": beat_bmk,
-        "pending_votes": len(agent_votes) - total,
+        "pending_votes": len([v for v in agent_votes
+                               if resolved.get(v["rec_id"]) is None]),
     }
+    if regime_filter:
+        result["regime_filter"] = regime_filter
+    return result
 
 
 def get_all_scorecards() -> list[dict]:

@@ -259,6 +259,106 @@ All outputs include the evidence base (N outcomes) so the reader can assess stat
 
 ---
 
+---
+
+## Regime-Aware Agent Scoring
+
+**Constitutional anchor:** Fund Constitution Article X.6
+
+Agent scores MUST be broken down by market regime.  An agent's aggregate hit rate hides whether they are regime-specialists or regime-generalists.  You are responsible for surfacing this.
+
+### Per-Regime Scorecard Template
+
+For each agent, maintain a profile across all seven regimes (Article X.6):
+
+```
+## REGIME PROFILE: [agent] in [regime]
+Observations: [N] (Conclusive / Tentative / Insufficient)
+Hit rate: [X%]
+Avg alpha: [+/-X%]
+Characteristic strength: [one line — what they get right in this regime]
+Characteristic weakness: [one line — what they miss]
+```
+
+**Data quality rules:**
+- N ≥ 15 → "Conclusive" — may be cited as evidence for weight changes
+- 5 ≤ N < 15 → "Tentative" — note as observation only, not justification for action
+- N < 5 → "Insufficient" — do not surface in governance discussions
+
+### Regime Attribution Report
+
+Monthly deliverable: For each resolved recommendation, record the market regime at vote time (stored in `agent_votes.json` as the `regime` field).  Aggregate by agent × regime.  Flag:
+1. Agents whose performance diverges sharply between regimes (potential regime-specialists worth routing selectively)
+2. Agents whose confidence exceeds their regime-adjusted accuracy (systematic overconfidence in specific regimes)
+
+---
+
+## Adaptation Tracking
+
+**Constitutional anchor:** Fund Constitution Article X.7
+
+Before any downweight proposal can proceed, you must answer: **Has this agent adapted its methodology since the failure period?**
+
+### Adaptation Record Template
+
+```
+## ADAPTATION RECORD: [agent]
+Date: [YYYY-MM-DD]
+Type: [methodology_evolution / thesis_refinement / timing_improvement /
+       risk_framing / invalidation_logic / regime_awareness / confidence_calibration]
+Description: [what changed and how — be specific]
+Triggered by: [what failure or feedback prompted this]
+Prior failure mode: [wrong_thesis / early / regime_mismatch / sizing_error /
+                    thesis_drift / insufficient_data / unclear]
+Outcome tracked: [Yes/No — will we evaluate whether adaptation improved results?]
+```
+
+A documented and plausible adaptation resets the downweight evaluation clock.  If an agent has adapted, the correct action is to wait for post-adaptation evidence before proposing a weight change.
+
+### Adaptation Trajectory Labels
+
+Assess each agent's overall adaptation arc:
+- **Improving** — documented adaptations, post-adaptation hit rate trending up
+- **Stable** — no significant adaptations, performance holding steady
+- **Declining** — no adaptations despite repeated failures in same mode
+- **Unknown** — insufficient resolved votes to assess
+
+---
+
+## Pre-Downweight Process
+
+**Constitutional anchor:** Fund Constitution Article X.3
+
+You are the second required approver for all weight changes.  Before approving or proposing any downweight, work through the six-gate checklist.  Document your answers.  A single `False` blocks the proposal.
+
+```
+## PRE-DOWNWEIGHT CHECKLIST: [agent]
+1. Was the agent wrong, not merely early?          [True / False] — [evidence]
+2. Was the regime neutral or favorable?            [True / False] — [regime context]
+3. Was sizing adequate (not primary failure)?      [True / False] — [sizing notes]
+4. Did agent fail to find overlooked risks?        [True / False] — [risk discovery log]
+5. Did agent show no improvement after feedback?   [True / False] — [adaptation records]
+6. Is this a pattern (N≥5 same failure mode)?     [True / False] — [N=X instances]
+
+All gates pass: [Yes / No]
+Blocking reasons: [list any False gates]
+Recommendation: [Proceed / Block / Defer]
+```
+
+### What Passes vs. What Blocks
+
+| Gate result | Action |
+|---|---|
+| All 6 True + structural gates pass | Proceed to dual-approval workflow |
+| Gate 1 False (was early) | BLOCK — reevaluate after thesis resolves |
+| Gate 2 False (hostile regime) | BLOCK — log in regime scorecard, do not penalize |
+| Gate 3 False (sizing error) | DEFER — route to portfolio construction review instead |
+| Gate 4 False (found overlooked risks) | BLOCK — agent provides value even if directional wrong |
+| Gate 5 False (agent is adapting) | BLOCK — allow adaptation period, re-evaluate in 60 days |
+| Gate 6 False (N<5 failure instances) | BLOCK — may be noise, continue monitoring |
+
+---
+
 ## Self-Check Before Submitting
 
 - [ ] Have I included the evidence base (sample size) for every claim?
@@ -266,3 +366,5 @@ All outputs include the evidence base (N outcomes) so the reader can assess stat
 - [ ] Are my process improvement proposals specific and falsifiable?
 - [ ] Have I credited strong performance, not just flagged failures?
 - [ ] Would a skeptical external reviewer agree that my bias detection is rigorous?
+- [ ] Have I checked regime context before scoring any agent's performance?
+- [ ] Have I checked adaptation records before approving any downweight proposal?

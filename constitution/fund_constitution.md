@@ -452,9 +452,113 @@ The Learning Coordinator proposes process improvements. They are surfaced to the
 
 ---
 
+---
+
+## Article X — Agent Weighting and Learning Governance
+
+### 10.1 Weight Bounds and Defaults
+
+Agent influence weights are bounded to the range **[0.5, 1.5]**.  No agent is ever silenced or removed from the committee entirely — the floor of 0.5 ensures every voice is heard.  Default weight for all agents is **1.0** at initialization.
+
+Weight changes are capped at **±0.10 per single adjustment** to ensure evolution is gradual and observable.
+
+### 10.2 Conservative Downweighting Mandate
+
+**The system is biased toward stability, not responsiveness.**  Downweighting an agent is a significant governance action and must not be triggered by a short performance run, a single bad call, or a hostile regime that would have harmed any analyst's signals.
+
+Structural gates that must ALL pass before a downweight can be proposed:
+
+| Gate | Threshold |
+|---|---|
+| Minimum resolved votes | N ≥ 20 |
+| Minimum tracking duration | 90 days |
+| Maximum single adjustment | ≤ 0.10 |
+
+### 10.3 Pre-Downweight Checklist (6 Gates)
+
+Before proposing a downweight, the proposer MUST work through all six gates.  A single `False` blocks the proposal:
+
+1. **Was the agent actually wrong — not merely early?**  Early ≠ Incorrect.  If the thesis eventually resolved favorably (even after the measurement window), the call was early, not wrong.  → `False` = BLOCK.
+
+2. **Was the market regime neutral or favorable to the agent's style?**  An agent optimized for liquidity expansion cannot be faulted for underperforming during a panic.  → `False` = BLOCK.
+
+3. **Was sizing adequate and not the primary failure driver?**  If position sizing errors caused the loss rather than the underlying thesis, this is a sizing problem — not a signal quality problem.  → `False` = DEFER.
+
+4. **Did the agent fail to surface risks that others missed?**  An agent that correctly identified overlooked risks provides value even when the directional call was wrong.  → `False` = BLOCK.
+
+5. **Did the agent show no improvement after receiving feedback?**  If the agent has adapted its methodology in a documentable way, downweighting is premature.  → `False` = BLOCK.
+
+6. **Is this a pattern and not statistical noise?**  Require at least 5 documented failure instances in the same failure mode before concluding it is systematic.  → `False` = BLOCK.
+
+### 10.4 Dual Approval Requirement
+
+All weight changes (both up and down) require dual approval from:
+- **CIO** — final allocation authority
+- **Learning Coordinator** — tracks methodology evolution and bias patterns
+
+A single rejection from either approver blocks the change.  Approvals cannot be carried over between proposals.
+
+### 10.5 Upweight Standard
+
+Upweighting has a lower bar than downweighting because it is easier to reward than punish:
+
+| Structural gate | Upweight | Downweight |
+|---|---|---|
+| Minimum resolved votes | N ≥ 15 | N ≥ 20 |
+| Minimum tracking duration | 60 days | 90 days |
+
+An upweight still requires the dual-approval workflow and the ±0.10 per-adjustment cap.
+
+### 10.6 Regime-Aware Evaluation Mandate
+
+Agent performance MUST be evaluated by market regime, not on aggregate.  The seven recognized regimes are:
+
+| Regime | Characterized By |
+|---|---|
+| `liquidity_expansion` | Fed easing, credit spreads tightening, broad risk-on |
+| `liquidity_tightening` | Fed hiking/QT, spreads widening, risk-off |
+| `bubble` | Parabolic price action, FOMO, leverage buildup |
+| `panic` | Forced deleveraging, correlation-to-1, illiquidity |
+| `trendless` | Low volatility, no directional conviction |
+| `reflation` | Commodity-led recovery, growth revival |
+| `stagflation` | Inflation with deteriorating growth |
+
+Regime classifications must be machine-computed from objective inputs (SPY return, VIX, credit spreads, Fed direction, inflation/growth regime) — not assigned by committee consensus.
+
+An agent's regime profile is labeled:
+- **Conclusive** when N ≥ 15 resolved votes in that regime
+- **Tentative** when 5 ≤ N < 15
+- **Insufficient** when N < 5
+
+Tentative and Insufficient profiles must not be used to justify weight changes.
+
+### 10.7 Adaptation-Before-Downgrade Principle
+
+Before downweighting an agent, the Learning Coordinator must document whether the agent has evolved its methodology since the failure period.  A documented and plausible adaptation record resets the evaluation clock.
+
+Adaptation types that can satisfy this requirement:
+- Methodology evolution (changed signal construction)
+- Thesis refinement (narrowed or sharpened the thesis)
+- Timing improvement (adjusted the entry/exit criteria)
+- Risk framing (added explicit invalidation triggers)
+- Regime awareness (added regime-conditional caveats)
+- Confidence calibration (recalibrated confidence expression)
+
+### 10.8 What Learning Is For
+
+The goal of agent learning is to understand **which analytical styles work in which environments** — not to reward recent winners and penalize recent losers.
+
+An analyst who performs poorly in a hostile regime and then performs well as conditions shift has NOT improved.  An analyst who explicitly models the regime shift and adjusts their framework HAS improved.
+
+The learning system tracks this distinction via `AdaptationRecord` entries.  Weight changes driven only by recency without adaptation evidence violate this article.
+
+---
+
 ## Appendix B — Amendment Log
 
 | Version | Date | Change | Approved By |
 |---|---|---|---|
 | 1.0 | 2026-05-13 | Initial constitution | Human investor |
+| 1.1 | 2026-05-13 | Article VIII redesigned — alternative portfolio governance | Human investor |
+| 1.2 | 2026-05-13 | Article X added — agent weighting and learning governance | Human investor |
 | 1.1 | 2026-05-13 | Article VIII redesigned: alternative portfolio governance with dynamic registry, committee approval, anti-bias rules, and conservative intelligence learning | Human investor |
