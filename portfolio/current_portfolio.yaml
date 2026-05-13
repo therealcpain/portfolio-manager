@@ -64,8 +64,8 @@ core_structural:
       portfolio_pct: 10.0  # PLACEHOLDER
       thesis_lifecycle: Confirming
       time_horizon: Strategic
-      thesis: "Leveraged BTC exposure via equity; Bitcoin treasury company; scarcity premium"
-      invalidation: "BTC structural breakdown; MSTR premium to NAV collapses; dilution accelerates beyond thesis"
+      thesis: "MicroStrategy as Bitcoin accumulation vehicle: ongoing BTC treasury expansion via equity/debt issuance, post-halving supply contraction (April 2024) reducing new issuance to ~450 BTC/day, sovereign and institutional adoption accelerating. Provides leveraged BTC beta without custody complexity."
+      invalidation: "BTC structural breakdown below cycle support; MSTR premium to NAV collapses below 1.0x; dilution rate exceeds BTC-per-share growth; regulatory action on corporate BTC holdings"
       target_zone: "[LIVE DATA REQUIRED]"
       trim_rule: "Trim 50% if BTC drops below key support on volume"
 

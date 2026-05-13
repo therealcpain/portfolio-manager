@@ -162,24 +162,26 @@ def generate_pdf(result, output_path=None) -> Path:
             "TRIM":     _RED,   "EXIT":     _RED,   "REDUCE": _RED,
             "HOLD":     _DARK,
         }
-        rows = [[
-            P("Position", "label"), P("Target", "label"),
-            P("vs 1d", "label"), P("vs 1wk", "label"), P("vs 1mo", "label"),
-            P("Action", "label"), P("Conf", "label"),
-        ]]
+        # Header row — white text on solid purple for readability
+        hdr_cells = ["POSITION", "TARGET %", "vs 1d", "vs 1wk", "vs 1mo", "ACTION", "CONF"]
+        rows = [[Paragraph(f"<b>{h}</b>", ParagraphStyle(
+            f"th{i}", fontName="Helvetica-Bold", fontSize=8.5,
+            textColor=colors.white, leading=11,
+        )) for i, h in enumerate(hdr_cells)]]
+
+        def fmt_delta(v):
+            if v is None or abs(v) < 0.5: return P("—", "small")
+            s = f"+{v:.1f}pp" if v > 0 else f"{v:.1f}pp"
+            return P(s, "green" if v > 0 else "red")
+
         for d in alloc_deltas:
-            def fmt_delta(v):
-                if v is None: return P("—", "small")
-                if abs(v) < 0.5: return P("—", "small")
-                s = f"+{v:.1f}%" if v > 0 else f"{v:.1f}%"
-                return P(s, "green" if v > 0 else "red")
-
             action = d.action.upper()
-            act_color = action_colors.get(action, _DARK)
-            act_style = "green" if act_color == _GREEN else ("red" if act_color == _RED else "body")
-
+            act_style = ("green" if action in ("ADD","INITIATE","RAISE")
+                         else "red" if action in ("TRIM","EXIT","REDUCE") else "body")
+            # Normalize cash label
+            label = "CASH / STRC" if d.ticker in ("CASH", "STRC") else d.ticker
             rows.append([
-                P(f"<b>{d.ticker}</b>", "body"),
+                P(f"<b>{label}</b>", "body"),
                 P(f"<b>{d.current_pct:.0f}%</b>", "body"),
                 fmt_delta(d.delta_1d),
                 fmt_delta(d.delta_1w),
@@ -188,12 +190,21 @@ def generate_pdf(result, output_path=None) -> Path:
                 P(f"{d.confidence}%" if d.confidence else "—", "small"),
             ])
 
-        col_w = [1.1*inch, 0.75*inch, 0.75*inch, 0.75*inch, 0.75*inch, 0.85*inch, 0.6*inch]
+        # Options row — always shown explicitly
+        rows.append([
+            P("OPTIONS", "small"),
+            P("0%", "small"),
+            P("—", "small"), P("—", "small"), P("—", "small"),
+            P("NONE", "small"),
+            P("—", "small"),
+        ])
+
+        col_w = [1.25*inch, 0.8*inch, 0.75*inch, 0.75*inch, 0.75*inch, 0.85*inch, 0.6*inch]
         t = Table(rows, colWidths=col_w)
         t.setStyle(TableStyle([
-            ("BACKGROUND",    (0,0),(-1,0),  C(_ARCANE)),
-            ("TEXTCOLOR",     (0,0),(-1,0),  C(_NEON)),
-            ("ROWBACKGROUNDS",(0,1),(-1,-1), [C(_WHITE), C(_LGRAY)]),
+            ("BACKGROUND",    (0,0),(-1,0),  C(_PURPLE)),   # solid purple header
+            ("ROWBACKGROUNDS",(0,1),(-1,-2), [C(_WHITE), C(_LGRAY)]),
+            ("BACKGROUND",    (0,-1),(-1,-1), C(_MGRAY)),   # options row greyed
             ("GRID",          (0,0),(-1,-1), 0.3, C(_MGRAY)),
             ("TOPPADDING",    (0,0),(-1,-1), 5),
             ("BOTTOMPADDING", (0,0),(-1,-1), 5),
@@ -201,9 +212,17 @@ def generate_pdf(result, output_path=None) -> Path:
             ("FONTSIZE",      (0,0),(-1,-1), 8.5),
             ("VALIGN",        (0,0),(-1,-1), "MIDDLE"),
         ]))
-        story += [t, SP(6)]
+        story += [t, SP(4)]
 
-        # Overall confidence bar text
+        # Legend
+        story.append(P(
+            "ADD = increase  ·  TRIM = reduce  ·  HOLD = no change  ·  "
+            "EXIT = close position  ·  INITIATE = new  ·  pp = percentage points vs prior day",
+            "small"
+        ))
+        story.append(SP(4))
+
+        # Overall confidence
         conf = alloc_snap.overall_confidence if alloc_snap else 0
         conf_style = "green" if conf >= 70 else ("amber" if conf >= 50 else "red")
         story.append(P(f"Portfolio confidence: {conf}/100", conf_style))
@@ -219,7 +238,7 @@ def generate_pdf(result, output_path=None) -> Path:
     positions_to_show = alloc_deltas if alloc_deltas else []
 
     for d in positions_to_show:
-        if d.ticker == "CASH":
+        if d.ticker in ("CASH", "STRC"):
             continue
 
         # Get thesis from CIO raw text or portfolio yaml
@@ -262,16 +281,65 @@ def generate_pdf(result, output_path=None) -> Path:
         pos_items.append(SP(4))
         story.append(KeepTogether(pos_items))
 
-    # Cash rationale
-    cash_delta = next((d for d in alloc_deltas if d.ticker == "CASH"), None)
+    # Cash / STRC rationale
+    cash_delta = next((d for d in alloc_deltas if d.ticker in ("CASH","STRC")), None)
     if cash_delta:
         story.append(KeepTogether([
             P(f"<b>CASH / STRC</b>  ·  {cash_delta.current_pct:.0f}% target  ·  {cash_delta.action}", "pos"),
-            P("Uninvested capital in money market / STRC earning yield. Raised during uncertainty, deployed when conviction is high.", "body"),
+            P(f"Held in STRC or money market equivalent, earning yield while awaiting high-conviction deployment. "
+              f"{'Reason: ' + cash_delta.reason if cash_delta.reason else 'Dry powder — no current high-conviction opportunity warrants full deployment.'}", "body"),
             SP(4),
         ]))
 
+    # Options callout — always explicit
+    story.append(KeepTogether([
+        P("<b>OPTIONS / CONVEXITY</b>  ·  0% currently", "pos"),
+        P("No options positions active. Options are reserved for asymmetric setups where the risk/reward "
+          "justifies the premium decay. Current volatility environment does not present a compelling entry. "
+          "Will revisit if VIX compresses further or a catalyst creates a defined-risk asymmetric trade.", "body"),
+        SP(4),
+    ]))
+
     story += [SP(4), HR()]
+
+    # ── Bear case / contrarian view ───────────────────────────────────────────
+    story.append(sec("IF THE BEARS ARE RIGHT"))
+
+    bear_memo = memo_lookup.get("bear_case_analyst", {})
+    risk_memo  = memo_lookup.get("risk_officer", {})
+
+    bear_pts  = bear_memo.get("key_points", [])
+    bear_rec  = bear_memo.get("recommendation", "")
+    risk_pts  = risk_memo.get("key_points", [])
+
+    if bear_pts or risk_pts:
+        story.append(P(
+            "The following represents the contrarian allocation the bear case analyst would recommend "
+            "if their thesis is correct. It is not the CIO recommendation — it is the stress-test view "
+            "you should hold in your head as a check on conviction.", "body"
+        ))
+        story.append(SP(4))
+        if bear_pts:
+            story.append(P("<b>Bear case analyst argues:</b>", "label"))
+            for pt in bear_pts[:4]:
+                story.append(P(f"  • {pt}", "body"))
+        if bear_rec:
+            story.append(SP(3))
+            story.append(P(f"<b>Contrarian recommendation:</b> {bear_rec}", "body"))
+        if risk_pts:
+            story.append(SP(4))
+            story.append(P("<b>Risk officer flags:</b>", "label"))
+            for pt in risk_pts[:3]:
+                story.append(P(f"  • {pt}", "body"))
+    else:
+        story.append(P(
+            "Bear case memo not available in this run. In live mode, the bear_case_analyst "
+            "and risk_officer specialists provide the contrarian stress-test view — what the portfolio "
+            "should look like if the dominant thesis is wrong (more cash, less beta, gold over equities).",
+            "body"
+        ))
+
+    story += [SP(6), HR()]
 
     # ── Section 3: What changed ───────────────────────────────────────────────
     changes = [d for d in alloc_deltas if d.delta_1d and abs(d.delta_1d) >= 0.5]
