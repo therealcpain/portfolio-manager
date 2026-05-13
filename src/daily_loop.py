@@ -879,6 +879,26 @@ def _run_cio_decision(
 
     cio = _parse_cio_decision(raw)
 
+    # Parse and persist target allocation from CIO text
+    try:
+        from allocation_tracker import parse_allocation_from_cio, save_snapshot, compute_deltas
+        alloc_snap = parse_allocation_from_cio(
+            raw=raw,
+            date_str=cfg.resolved_date(),
+            regime=regime.macro_regime,
+            overall_confidence=cio.final_confidence,
+        )
+        if alloc_snap:
+            save_snapshot(alloc_snap)
+            cio._allocation_snapshot = alloc_snap
+            cio._allocation_deltas = compute_deltas(alloc_snap)
+        else:
+            cio._allocation_snapshot = None
+            cio._allocation_deltas = []
+    except Exception:
+        cio._allocation_snapshot = None
+        cio._allocation_deltas = []
+
     # Signal vs action separation
     signals: list[dict] = []
     actions: list[dict] = []
