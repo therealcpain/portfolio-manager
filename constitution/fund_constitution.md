@@ -208,23 +208,70 @@ Emerging → Confirming → High Conviction
                          Crowded → Distribution Risk → Breakdown Risk → Invalidated
 ```
 
-### 5.2 State Definitions and Sizing
+Any state can transition directly to `Invalidated`. `Invalidated` is terminal.
 
-| State | Sizing Guidance | Key Characteristic |
-|---|---|---|
-| Emerging | 1/3 to 1/2 of target | Evidence incomplete, thesis forming |
-| Confirming | 1/2 to 3/4 of target | Multiple data points aligning |
-| High Conviction | Full target (or above if exceptional asymmetry) | Thesis fully confirmed across factors |
-| Crowded | 50–75% of peak — begin trimming | Consensus adoption, sentiment shifting |
-| Distribution Risk | 25–50% of peak — trim on bounces | Smart money exiting, volume patterns |
-| Breakdown Risk | ≤25% of peak — prepare full exit | Technical breakdown confirmed |
-| Invalidated | 0% | Core thesis premise proven false |
+### 5.2 State Definitions, Sizing, and Urgency
 
-### 5.3 Thesis Invalidation
+| State | Sizing Guidance | Key Characteristic | Urgency |
+|---|---|---|---|
+| Emerging | 1/3 to 1/2 of target | Evidence incomplete, thesis forming | Low |
+| Confirming | 1/2 to 3/4 of target | Multiple data points aligning | Low |
+| High Conviction | Full target or above if exceptional asymmetry | Thesis fully confirmed | Low |
+| Crowded | 50–75% of peak — begin trimming | Consensus adoption, sentiment shifting | Medium |
+| Distribution Risk | 25–50% of peak — trim on bounces | Smart money exiting | High |
+| Breakdown Risk | 10–20% max — active exit plan | Technical breakdown confirmed | Critical |
+| Invalidated | Zero — exit fully | Core thesis premise proven false | Critical |
 
-A thesis is invalidated when its stated invalidation condition is met — NOT when the price drops. Price drops in a valid thesis are buying opportunities. Price drops in an invalidated thesis are exit mandates.
+### 5.3 Mandatory Persistent Memory
 
-**Thesis drift is the enemy.** If the original thesis is no longer the reason the position is held, the position must be re-underwritten from scratch or exited.
+Every active thesis MUST maintain persistent memory with the following 11 fields.  These fields are captured at thesis inception and updated as conditions evolve.  This memory is never deleted — even after a thesis is invalidated.
+
+| Field | Description |
+|---|---|
+| `original_thesis` | Core thesis premise — immutable after creation |
+| `macro_context` | Macro backdrop when thesis was opened |
+| `technical_context` | Technical setup at thesis open |
+| `sentiment_context` | Sentiment conditions at thesis open |
+| `expected_regime` | Market regime the thesis is designed for |
+| `invalidation_conditions` | Specific conditions that would falsify the thesis (≥1 required) |
+| `thesis_evolution` | Versioned log of how the thesis understanding changed and why |
+| `lifecycle_state` | Current lifecycle state |
+| `historical_adjustments` | All position changes with reasoning at time of decision |
+| `associated_dissent` | All committee dissent against this thesis |
+| `confidence_history` | Time-series of confidence scores with regime and key factors |
+
+### 5.4 Thesis Invalidation
+
+A thesis is invalidated when its stated invalidation condition is met — NOT when price drops.  Price drops in a valid thesis are buying opportunities.  Price drops in an invalidated thesis are exit mandates.
+
+**Thesis drift is the enemy.**  If the original thesis is no longer the reason the position is held, the position must be re-underwritten from scratch or exited.  Any significant change in reasoning must be logged as a `thesis_evolution` entry — not silently adopted.
+
+### 5.5 Review Triggers
+
+The following events MUST trigger an immediate thesis review.  They do not require an automatic action but do require a documented response:
+
+| Trigger | Description |
+|---|---|
+| `macro_regime_change` | Current regime differs from `expected_regime` |
+| `technical_breakdown` | Price breaks below a key support level |
+| `liquidity_contraction` | Market-wide liquidity is contracting (VIX spike, credit spread widening) |
+| `sentiment_euphoria` | Sentiment score > 80/100 — thesis may be crowded |
+| `valuation_compression` | Forward valuation metrics have compressed materially |
+| `invalidation_of_assumptions` | A core thesis assumption is violated |
+
+A documented response means: (1) acknowledge the trigger, (2) state whether it changes the thesis, (3) update the lifecycle state if appropriate.  Silence is not a valid response.
+
+### 5.6 Watch-But-Don't-Act Protocol
+
+The system maintains active **watch setups** for situations being monitored but not yet acted on.  This is disciplined patience, not inaction.
+
+Every watch setup must define:
+- **Setup description** — What situation we are monitoring
+- **Entry triggers** — Specific, measurable conditions that must be met before acting
+- **Exit triggers** — Conditions that invalidate the setup premise
+- **Patience note** — Explicit statement of WHY we are waiting rather than acting now
+
+Watch setups prevent the most common behavioral error: acting on an intraday spike instead of waiting for confirmed structure.
 
 ---
 
@@ -232,30 +279,61 @@ A thesis is invalidated when its stated invalidation condition is met — NOT wh
 
 ### 6.1 Core Principle
 
-A signal is an observation. An action is a consequence. They are NOT the same thing.
+**A signal is an observation. An action is a decision. They are not the same thing.**
 
-Most signals should produce NO immediate action. The cost of overtrading (tax drag, execution costs, behavioral momentum) exceeds the cost of waiting in most cases.
+Every signal MUST be paired with an explicit action decision — including the decision to do nothing.  This pairing must be logged.  An undocumented "nothing happened" response to a signal is not acceptable.
 
-### 6.2 Action Hierarchy
+Most signals should produce NO immediate action.  The cost of overtrading (tax drag, execution costs, behavioral drift) exceeds the cost of waiting in most cases.
 
-| Action Type | When Used |
+### 6.2 Signal vs. Action — Required Separation
+
+Every signal record must contain two distinct components:
+
+**Signal (observation — what was seen):**
+> "BTC 4-hour RSI divergence confirmed. Momentum improving across the last 3 sessions."
+
+**Action (decision — what was decided, including no-action):**
+> "No portfolio change. Weekly resistance at $95,000 remains unconfirmed. Waiting for a weekly close above $95k with volume exceeding the 20-day average before adding."
+
+The separation is mandatory.  Signals that do not produce an explicit action decision are incomplete records.
+
+### 6.3 Watch Triggers
+
+Every no-action decision must include **watch triggers** — the specific conditions that would change the decision:
+
+> Watch triggers: ["Weekly close above $95k with volume >150% of 20-day avg", "MSTR/BTC ratio improving for 3 consecutive sessions"]
+
+Watch triggers convert patience from a feeling into a testable condition.  They also prevent the opposite error: watching so long that a valid setup expires unacted.
+
+### 6.4 Action Hierarchy
+
+| Action | When Used |
 |---|---|
-| BUY_FULL | Thesis at High Conviction, technical structure ideal |
-| BUY_PARTIAL | Thesis Confirming, or scaling in under uncertainty |
-| HOLD | Thesis valid, no new actionable information |
-| TRIM_PARTIAL | Crowded signal, concentration limit approached, thesis weakening |
-| TRIM_FULL | Invalidation condition met |
-| WAIT_FOR_CONFIRMATION | Signal present but not confirmed (RSI divergence default) |
-| HEDGE | Risk-off regime, options protection warranted |
-| NO_ACTION | Signal noted but below action threshold |
+| `Buy_Full` | Thesis at High Conviction, technical structure confirmed |
+| `Buy_Partial` | Thesis Confirming, or scaling in under uncertainty |
+| `Hold` | Thesis valid, no new actionable information |
+| `Trim_Partial` | Crowded signal, concentration limit approached |
+| `Trim_Full` | Invalidation condition met |
+| `Wait_For_Confirmation` | Signal present but not confirmed (default for RSI divergence) |
+| `Hedge` | Risk-off regime, options protection warranted |
+| `No_Action` | Signal noted; explicitly decided below action threshold |
 
-### 6.3 Action Validation Requirements
+### 6.5 Action Validation Requirements
 
-Every action must have:
-- Rationale ≥ 25 words
-- Explicit invalidation condition
-- Size description (for any buy or trim)
-- Urgency level (Low / Medium / High)
+Every action (including `No_Action`) must document:
+- **Signal description** — what was observed (factual, not interpretive)
+- **Action taken** — specific decision (including "no change")
+- **Action rationale** — why this decision (≥ 25 words)
+- **Watch triggers** — conditions that would change the decision
+- **Requires immediate action** — boolean flag; `True` only for invalidation/breakdown signals
+
+### 6.6 Disciplined Adaptation Mandate
+
+The system prioritizes **disciplined adaptation over constant activity.**
+
+A week with zero portfolio changes is often a better week than a week with five changes.  Organizational discipline is measured not just by what we buy and sell, but by what we correctly chose not to buy and sell.
+
+Signals that fire but produce documented `No_Action` decisions are evidence of discipline, not neglect.  They must be reviewed in the weekly learning report to confirm the patience was warranted.
 
 ---
 
@@ -661,4 +739,5 @@ An organization that produces fewer, higher-quality outputs with fewer agents is
 | 1.1 | 2026-05-13 | Article VIII redesigned — alternative portfolio governance | Human investor |
 | 1.2 | 2026-05-13 | Article X added — agent weighting and learning governance | Human investor |
 | 1.3 | 2026-05-13 | Article XI added — organizational evolution governance | Human investor |
+| 1.4 | 2026-05-13 | Articles V and VI expanded — persistent thesis memory, watch setups, signal/action doctrine | Human investor |
 | 1.1 | 2026-05-13 | Article VIII redesigned: alternative portfolio governance with dynamic registry, committee approval, anti-bias rules, and conservative intelligence learning | Human investor |
