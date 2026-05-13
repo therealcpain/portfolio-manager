@@ -554,6 +554,105 @@ The learning system tracks this distinction via `AdaptationRecord` entries.  Wei
 
 ---
 
+---
+
+## Article XI — Organizational Evolution Governance
+
+### 11.1 Philosophy: Prefer Simplicity
+
+The investment organization exists to generate better decisions, not to maximize its own complexity.  Every additional agent, layer, or workflow step has a cost: coordination overhead, redundant output, slower decisions, and harder-to-audit reasoning chains.
+
+**The default answer to "should we add X?" is No.**  The burden of proof is always on the proposal to justify why the benefit exceeds the complexity cost.
+
+### 11.2 Organizational Preferences
+
+When evaluating any structural change, prefer in this order:
+
+1. **Routing change** — Can a coordinator route differently to achieve the same outcome?
+2. **Workflow redesign** — Can a process change eliminate the gap without adding agents?
+3. **Agent specialization** — Can an existing agent refine its scope rather than splitting?
+4. **Temporary agent trial** — A bounded experiment before any permanent addition.
+5. **New permanent agent** — Highest cost option; requires passing all seven gates.
+
+Never prefer structural complexity when a simpler intervention will work.
+
+### 11.3 Complexity Monitoring
+
+The organization actively monitors six dimensions of complexity.  Sustained threshold breaches require intervention:
+
+| Metric | Alert Threshold | Meaning |
+|---|---|---|
+| Active agent count | > 20 | Committee is too large to coordinate effectively |
+| Average debate size | > 8 specialists per decision | Too many voices per decision; routing is too broad |
+| Redundant output rate | > 30% identical stances | Agents are duplicating each other |
+| Unnecessary analysis rate | > 25% outputs uncited | CIO is not using specialists' work |
+| Average report sections | > 25 | Reports are bloated — information is buried |
+| Complexity score (composite) | > 70 / 100 | Overall complexity warrants intervention |
+
+A daily complexity snapshot is computed from recent sessions and logged.  Breaches trigger structural improvement proposals automatically.
+
+### 11.4 Organizational Observations
+
+Weakness observations are accumulated over time and categorized as:
+- **Missing expertise** — a decision domain was identified but no specialist covers it
+- **Duplicated expertise** — two or more agents produce consistently identical analysis
+- **Coordination failure** — a routing decision produced the wrong specialist set
+- **Process weakness** — a recurring friction in the coordination or reporting workflow
+
+Observations must be seen **at least 3 times** before they can support a structural proposal.  Single-instance observations are noted but not acted upon.
+
+### 11.5 New Agent Requirements (7-Gate Checklist)
+
+All new and temporary agent proposals must pass seven mandatory gates before submission.  A single `False` blocks the proposal:
+
+| Gate | Block Condition |
+|---|---|
+| 1. Expertise gap documented | Gap observed < 3 times → BLOCK |
+| 2. Overlap below threshold | Overlap ≥ 50% with any existing agent → BLOCK |
+| 3. Complexity cost bounded | No explicit complexity cost statement → BLOCK |
+| 4. Trial period defined | No trial (or < 30 days / > 180 days) → BLOCK |
+| 5. Success criteria measurable | Fewer than 2 specific, measurable criteria → BLOCK |
+| 6. Routing change insufficient | Routing change alone could address gap → BLOCK |
+| 7. Specialization is narrow | Scope too broad, duplicates generalist → BLOCK |
+
+Additionally, a structural ceiling applies: **no new agents may be added when the active agent count is at or above 20**.  An existing agent must be retired or merged first.
+
+### 11.6 Agent Lifecycle Types
+
+The organization recognizes six types of structural proposals:
+
+| Type | Description |
+|---|---|
+| `new_agent` | Permanent new committee member after successful trial |
+| `temporary_agent` | Time-bounded experiment (30–180 days) with defined exit criteria |
+| `merge_agents` | Two agents with >70% analytical overlap consolidated into one |
+| `retire_agent` | Agent whose function is adequately covered, obsolete, or consistently redundant |
+| `workflow_redesign` | Change to routing logic, coordination flow, or reporting structure |
+| `reporting_redesign` | Change to output format, section structure, or distribution |
+
+### 11.7 Approval and Governance
+
+All organizational proposals require dual approval from:
+- **CIO** — final authority on committee composition
+- **Learning Coordinator** — tracks bias, redundancy, and improvement patterns
+
+A single rejection blocks the proposal.  Rejections must include a specific reason.
+
+Trial period agents are automatically moved to review at trial end.  The CIO and Learning Coordinator must then decide: promote to permanent, extend the trial, or retire.
+
+### 11.8 What Organizational Evolution Is For
+
+The goal is not to build the most sophisticated committee — it is to build the **most effective** one.  Effectiveness is measured by:
+
+- Decision quality (outcomes vs. benchmark)
+- Decision speed (latency from question to CIO recommendation)
+- Analysis utilization (fraction of specialist work cited by CIO)
+- Report actionability (decisions made per report section)
+
+An organization that produces fewer, higher-quality outputs with fewer agents is better than one that produces more outputs with more agents.
+
+---
+
 ## Appendix B — Amendment Log
 
 | Version | Date | Change | Approved By |
@@ -561,4 +660,5 @@ The learning system tracks this distinction via `AdaptationRecord` entries.  Wei
 | 1.0 | 2026-05-13 | Initial constitution | Human investor |
 | 1.1 | 2026-05-13 | Article VIII redesigned — alternative portfolio governance | Human investor |
 | 1.2 | 2026-05-13 | Article X added — agent weighting and learning governance | Human investor |
+| 1.3 | 2026-05-13 | Article XI added — organizational evolution governance | Human investor |
 | 1.1 | 2026-05-13 | Article VIII redesigned: alternative portfolio governance with dynamic registry, committee approval, anti-bias rules, and conservative intelligence learning | Human investor |
