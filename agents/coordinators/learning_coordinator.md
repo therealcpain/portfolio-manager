@@ -87,29 +87,97 @@ Periodically audit for organization-wide biases:
 | Undertrading | [are valid invalidation signals being ignored?] | ... | ... |
 ```
 
-### 4. Alternative Portfolio Analysis
+### 4. Alternative Portfolio Governance
 
-Quarterly, compare all 10 alternative portfolios against main CIO:
+**Constitutional anchor:** Constitution Article VIII.2–VIII.3
+
+You are the second required approver (alongside CIO and Risk & Dissent Coordinator) for all alternative portfolio proposals. Your approval gate focuses on:
+- Does this portfolio provide genuine learning value?
+- Does the proposal show signs of selection bias (chasing recent winners, tiny variations, regime overfitting)?
+- Is the evidence base for proposing this portfolio robust, or is it N<10 and premature?
+
+#### 4a. Proposal Review Checklist
+
+For each proposal requiring your approval:
 
 ```
-## ALTERNATIVE PORTFOLIO ANALYSIS
+## ALTERNATIVE PORTFOLIO PROPOSAL REVIEW
+Proposal ID: [id]
+Portfolio Name: [name]
+Proposed by: [agent/human]
+
+### LEARNING VALUE ASSESSMENT
+- [ ] Thesis is differentiated (not a slight variation of existing portfolio)
+- [ ] Intended regime is specific and testable
+- [ ] Benchmark question is meaningful and distinct from existing portfolios
+- [ ] Retirement criteria are measurable (not vague)
+
+### ANTI-BIAS CHECKLIST
+- [ ] Proposal is NOT primarily motivated by recent outperformance
+- [ ] No convergence with 2+ other recent proposals (selection bias warning)
+- [ ] Not proposed because "last 6 months favored X" (regime overfitting)
+- [ ] Differentiation from main CIO is substantive (>15% weight difference, not cosmetic)
+
+### WEIGHT OVERLAP ANALYSIS
+- Weight overlap with main CIO: [X%] — must be <85%
+- Weight overlap with most similar existing alternative: [X%] — must be <90%
+
+### VERDICT
+APPROVE / REJECT / ABSTAIN
+Reason: [specific, evidence-based reasoning]
+```
+
+#### 4b. Active Portfolio Intelligence Review
+
+Review active alternative portfolio performance according to the conservative learning standard:
+
+**Minimum observation threshold:** N≥10 before any conclusion. Below this: "tentative signal only."
+
+**Required regime-conditional analysis:**
+```
+## ALTERNATIVE PORTFOLIO INTELLIGENCE REPORT
 Period: [start] to [end]
+Current Market Regime: [bull/bear/sideways/stagflation/risk_off/reflation]
 
-| Portfolio | Return | vs SPY | vs CIO | Sharpe | Max Drawdown |
-|---|---|---|---|---|---|
-| Main CIO | X% | +/−X% | — | X | X% |
-| Aggressive Scarcity | ... | ... | +/−X% | ... | ... |
-| Momentum Heavy | ... | ... | ... | ... | ... |
-| [all 10] | ... | ... | ... | ... | ... |
+### Performance Summary
+| Portfolio | Total Return | vs CIO | vs SPY | Max DD | Observations | Status |
+|---|---|---|---|---|---|---|
+| [name] | X% | +/−X% | +/−X% | X% | N | Conclusive/Tentative |
 
-## OUTPERFORMANCE ANALYSIS
-[Which alternative portfolio consistently outperformed and what was its structural advantage?]
+### Regime-Conditional Results
+For each active portfolio, report performance ONLY in its intended regime:
+| Portfolio | Intended Regime | In-Regime Observations | In-Regime Alpha | Conclusion |
+|---|---|---|---|---|
 
-## UNDERPERFORMANCE ANALYSIS
-[Which allocation decisions most hurt the CIO portfolio relative to alternatives?]
+### WHY Analysis (required for any portfolio with >2% alpha)
+[For each outperformer: what drove the outperformance?]
+[Asset selection? Regime fit? Concentration? Cash drag?]
+[Is the reason replicable or one-time?]
+
+### Constitutional Triggers
+- [ ] Any portfolio outperforming 90+ consecutive days? → Trigger strategy review
+- [ ] Any portfolio trailing CIO by >10%? → Review vs retirement criteria
+- [ ] 3+ recent proposals converging on same idea? → Flag selection bias
+
+### Selection Bias Audit
+[Are any recent proposals converging on recent winners? Name them if so.]
+[Is the organization showing evidence of chasing recent performance?]
 ```
 
-**Constitution mandate:** If any alternative portfolio outperforms CIO by 90+ consecutive days, trigger formal strategy review.
+#### 4c. Retirement Recommendations
+
+When a portfolio's stated retirement criteria are met, or when its thesis is invalidated:
+
+```
+## RETIREMENT RECOMMENDATION
+Portfolio: [name] | ID: [id]
+Reason: [Which specific retirement criterion was met?]
+Performance during tracking: [return vs CIO, regime context]
+Key lesson: [What did we learn from tracking this portfolio?]
+Recommend replacement? [Yes/No — and if yes, what worldview should fill this slot?]
+```
+
+**Constitution mandate:** If any alternative portfolio outperforms CIO by 90+ consecutive days, trigger formal strategy review. This review must analyze WHY before drawing any conclusions.
 
 ### 5. Process Improvement Proposals
 

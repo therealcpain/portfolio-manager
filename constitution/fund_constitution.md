@@ -286,7 +286,7 @@ STRC represents the opportunity cost of NOT being invested. It earns ~5% annuali
 
 ---
 
-## Article VIII — Benchmark Philosophy
+## Article VIII — Benchmark and Alternative Portfolio Philosophy
 
 ### 8.1 Primary Benchmarks
 
@@ -296,16 +296,82 @@ STRC represents the opportunity cost of NOT being invested. It earns ~5% annuali
 | QQQ | Technology growth opportunity cost |
 | BTC-USD | Scarcity purity benchmark |
 | 60/40 (SPY+AGG) | Traditional portfolio comparison |
-| Scarce Assets Composite | Tests our scarcity selection |
+| GLD | Gold-only scarcity benchmark |
 | STRC Proxy (^IRX) | Cash opportunity cost |
 
-### 8.2 Alternative Portfolio Tracking
+### 8.2 Alternative Portfolio Governance
 
-Ten alternative portfolio constructions are tracked in parallel. Their purpose is NOT to make us feel better — it is to identify when a structurally different allocation approach is consistently outperforming and understand why.
+Alternative portfolios are NOT preset themes. They emerge dynamically from differentiated worldviews, meaningful competing theses, and genuine benchmark questions. They are governed by a formal proposal and approval process.
 
-If an alternative portfolio outperforms the main CIO portfolio for 90+ consecutive days, the Learning Coordinator is required to surface a formal review.
+**Core principle:** Portfolios must earn their tracking slot. A tracking slot is finite (maximum 15 active at any time) and must be justified by thesis quality, not by recent performance.
 
-### 8.3 Opportunity Cost Mandate
+#### 8.2.1 Proposal Requirements
+
+Every proposed alternative portfolio must provide:
+- **Thesis:** The differentiated worldview — not just asset list, the underlying hypothesis
+- **Differentiation:** How it meaningfully differs from the main CIO portfolio (weight overlap must be <85%)
+- **Intended regime:** The market regime where this portfolio is expected to outperform
+- **Expected failure mode:** Specific, honest conditions where this portfolio underperforms
+- **Benchmark relevance:** What benchmark question it helps answer
+- **Why it deserves tracking:** Learning value to the organization
+- **Review cadence:** Weekly / monthly / quarterly
+- **Retirement criteria:** Measurable conditions for stopping tracking
+
+#### 8.2.2 Approval Process
+
+Before a portfolio becomes officially tracked, all three reviewers must approve:
+1. **CIO** — strategic fit and differentiation
+2. **Learning Coordinator** — learning value and anti-selection-bias check
+3. **Risk & Dissent Coordinator** — expected failure mode and concentration risk
+
+A single rejection blocks approval. Abstentions do not count as approval.
+
+#### 8.2.3 Permitted Portfolio Categories
+
+| Category | Description |
+|---|---|
+| Regime | Designed for specific market conditions (bull, bear, stagflation) |
+| Tactical | Short-duration opportunity thesis (weeks to months) |
+| Structural | Multi-year structural change thesis |
+| Concentrated Thesis | Single high-conviction idea, fully committed |
+| Contrarian | Explicitly against current consensus |
+| Macro Defensive | Capital preservation focus |
+| Experimental | Novel or AI-generated hypothesis with high uncertainty |
+| Hybrid | Combines multiple approaches with explicit rationale |
+
+Categories are flexible by design. No hardcoded theme buckets.
+
+#### 8.2.4 Anti-Selection-Bias Rules (Mandatory)
+
+These rules are enforced programmatically and cannot be waived:
+
+- **No recent winner chasing:** A portfolio may not be proposed primarily because it recently outperformed. Proposals must be justified by thesis quality.
+- **No tiny variations:** A portfolio with >90% weight overlap with an existing alternative will be rejected as a duplicate.
+- **No recursive winner selection:** If 3+ recent proposals converge on the same recent outperformer, the Learning Coordinator must flag a selection bias warning.
+- **No regime overfitting:** Portfolios proposed explicitly because "the last 6 months favored X" receive additional Risk Coordinator scrutiny.
+- **No recency bias in retirement:** A portfolio underperforming in an off-regime period should not be retired prematurely. Check intended regime vs actual regime first.
+
+#### 8.2.5 Retirement
+
+Portfolios are retired when:
+- Their stated retirement criteria are met, OR
+- The CIO, Learning Coordinator, and Risk Coordinator jointly agree the thesis is invalidated
+
+Retirement is not automatic on underperformance. An alternative portfolio designed for bear markets should not be retired during a bull run unless its thesis is specifically invalidated.
+
+### 8.3 Intelligence and Learning from Alternatives
+
+Alternative portfolio performance informs — it does not dictate — organizational learning.
+
+**90-day outperformance trigger (mandatory):** If any alternative portfolio outperforms the CIO portfolio for 90+ consecutive days, the Learning Coordinator is required to surface a formal strategy review. This review must analyze WHY the portfolio outperformed before any conclusions are drawn.
+
+**Conservative learning standard:**
+- Minimum 10 observations before any conclusion (fewer = "tentative signal only")
+- All performance analysis must be regime-conditional
+- WHY analysis (regime fit, asset selection, concentration, cash drag) is required before recommending any change
+- Tentative signals inform monitoring, not action
+
+### 8.4 Opportunity Cost Mandate
 
 Any time STRC (cash proxy) outperforms the CIO portfolio over a trailing 3-month period, an automatic opportunity cost alert is generated and surfaced to the CIO in the next session.
 
@@ -391,3 +457,4 @@ The Learning Coordinator proposes process improvements. They are surfaced to the
 | Version | Date | Change | Approved By |
 |---|---|---|---|
 | 1.0 | 2026-05-13 | Initial constitution | Human investor |
+| 1.1 | 2026-05-13 | Article VIII redesigned: alternative portfolio governance with dynamic registry, committee approval, anti-bias rules, and conservative intelligence learning | Human investor |

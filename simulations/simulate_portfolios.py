@@ -1,7 +1,8 @@
 """
-Portfolio Simulation Engine — Phase 2.
-Simulates all 10 portfolio strategies using real yfinance price data.
-Weights from alternative_portfolios/*.yaml applied to actual price returns.
+Portfolio Simulation Engine — Phase 3.
+Simulates all active alternative portfolios using real yfinance price data.
+Weights loaded dynamically from the alternative portfolio registry.
+Falls back to hardcoded defaults if registry is empty or unavailable.
 Advisory only — no live trading. Simulated performance ≠ future results.
 """
 
@@ -27,13 +28,15 @@ DISCLAIMER = (
 INCEPTION_DATE = date(2026, 5, 13)
 STARTING_CAPITAL = 100_000.0
 
-# ─── Alternative portfolio weight maps ───────────────────────────────────────
+# ─── Main CIO and benchmark weights (static) ─────────────────────────────────
 
-PORTFOLIO_WEIGHTS: dict[str, dict[str, float]] = {
-    "main_cio": {
-        "SPY": 0.20, "QQQ": 0.15, "MSTR": 0.10,
-        "GLD": 0.10, "URNM": 0.05, "STRC_PROXY": 0.40,
-    },
+MAIN_CIO_WEIGHTS: dict[str, float] = {
+    "SPY": 0.20, "QQQ": 0.15, "MSTR": 0.10,
+    "GLD": 0.10, "URNM": 0.05, "STRC_PROXY": 0.40,
+}
+
+# Fallback alternative weights — used only when registry is empty or unavailable
+_FALLBACK_ALTERNATIVE_WEIGHTS: dict[str, dict[str, float]] = {
     "aggressive_scarcity": {
         "MSTR": 0.30, "GLD": 0.25, "URNM": 0.20, "IBIT": 0.15, "XLE": 0.10,
     },
@@ -43,25 +46,48 @@ PORTFOLIO_WEIGHTS: dict[str, dict[str, float]] = {
     "momentum_heavy": {
         "QQQ": 0.35, "MSTR": 0.20, "GLD": 0.20, "SPY": 0.15, "STRC_PROXY": 0.10,
     },
-    "technical_confirmation_only": {
-        "SPY": 0.30, "QQQ": 0.25, "GLD": 0.20, "MSTR": 0.15, "STRC_PROXY": 0.10,
-    },
     "contrarian_sentiment": {
         "STRC_PROXY": 0.60, "GLD": 0.20, "URNM": 0.20,
-    },
-    "crypto_heavy": {
-        "MSTR": 0.40, "IBIT": 0.25, "COIN": 0.15, "CLSK": 0.10, "STRC_PROXY": 0.10,
-    },
-    "commodities_scarcity": {
-        "GLD": 0.35, "URNM": 0.25, "SLV": 0.15, "XLE": 0.15, "COPX": 0.10,
     },
     "ai_structural_change": {
         "QQQ": 0.30, "NVDA": 0.20, "SMH": 0.20, "NEE": 0.10, "MSFT": 0.10, "STRC_PROXY": 0.10,
     },
-    "strc_defensive": {
-        "STRC_PROXY": 0.80, "GLD": 0.20,
-    },
 }
+
+# For backwards compatibility — combine main CIO + fallbacks into PORTFOLIO_WEIGHTS
+PORTFOLIO_WEIGHTS: dict[str, dict[str, float]] = {
+    "main_cio": MAIN_CIO_WEIGHTS,
+    **_FALLBACK_ALTERNATIVE_WEIGHTS,
+}
+
+
+def load_alternative_weights() -> dict[str, dict[str, float]]:
+    """
+    Load active alternative portfolio weights from the dynamic registry.
+    Falls back to hardcoded defaults if registry is empty or unavailable.
+    Seeds the registry with legacy portfolios on first run.
+    """
+    try:
+        from alternative_portfolio_engine import (
+            get_portfolio_weights_map,
+            seed_registry_from_legacy,
+        )
+        weights_map = get_portfolio_weights_map()
+        if not weights_map:
+            # First run — seed registry with legacy portfolios
+            seed_registry_from_legacy(main_cio_weights=MAIN_CIO_WEIGHTS)
+            weights_map = get_portfolio_weights_map()
+        if weights_map:
+            return weights_map
+    except Exception:
+        pass
+    return _FALLBACK_ALTERNATIVE_WEIGHTS
+
+
+def get_active_portfolio_weights() -> dict[str, dict[str, float]]:
+    """Return all weights (main CIO + active alternatives) for simulation."""
+    alt_weights = load_alternative_weights()
+    return {"main_cio": MAIN_CIO_WEIGHTS, **alt_weights}
 
 BENCHMARK_WEIGHTS: dict[str, dict[str, float]] = {
     "SPY": {"SPY": 1.0},
@@ -73,9 +99,10 @@ BENCHMARK_WEIGHTS: dict[str, dict[str, float]] = {
 }
 
 
-def _all_tickers() -> list[str]:
+def _all_tickers(portfolio_weights: Optional[dict[str, dict[str, float]]] = None) -> list[str]:
     all_t: set[str] = set()
-    for weights in {**PORTFOLIO_WEIGHTS, **BENCHMARK_WEIGHTS}.values():
+    combined = portfolio_weights or get_active_portfolio_weights()
+    for weights in {**combined, **BENCHMARK_WEIGHTS}.values():
         all_t.update(weights.keys())
     return list(all_t)
 
@@ -190,22 +217,27 @@ def simulate_portfolio(
 def simulate_all(
     start: date = INCEPTION_DATE,
     end: Optional[date] = None,
+    use_registry: bool = True,
 ) -> dict[str, dict]:
     """
-    Simulate all 10 alternative portfolios + 6 benchmarks.
+    Simulate all active alternative portfolios + benchmarks.
+    Loads alternative portfolio weights dynamically from the registry when use_registry=True.
+    Falls back to hardcoded defaults if registry is unavailable.
     Returns dict keyed by portfolio name.
     """
     end = end or date.today()
 
+    portfolio_weights = get_active_portfolio_weights() if use_registry else PORTFOLIO_WEIGHTS
+
     # Use 2-year lookback so charts have context even before inception
     lookback_start = start - timedelta(days=730)
-    all_tickers = _all_tickers()
+    all_tickers = _all_tickers(portfolio_weights)
 
-    print(f"  Fetching price data for {len(all_tickers)} tickers...")
+    print(f"  Fetching price data for {len(all_tickers)} tickers ({len(portfolio_weights)} portfolios)...")
     prices = get_price_history_multi(all_tickers, start=lookback_start, end=end)
 
     results = {}
-    all_portfolios = {**PORTFOLIO_WEIGHTS, **{f"benchmark_{k}": v for k, v in BENCHMARK_WEIGHTS.items()}}
+    all_portfolios = {**portfolio_weights, **{f"benchmark_{k}": v for k, v in BENCHMARK_WEIGHTS.items()}}
     for name, weights in all_portfolios.items():
         results[name] = simulate_portfolio(name, weights, prices, start)
 
@@ -225,7 +257,7 @@ def print_summary_table(results: dict[str, dict]) -> None:
     table.add_column("Max DD", justify="right")
     table.add_column("Sharpe", justify="right")
 
-    order = list(PORTFOLIO_WEIGHTS.keys()) + [f"benchmark_{k}" for k in BENCHMARK_WEIGHTS]
+    order = list(results.keys())
     for name in order:
         r = results.get(name, {})
         tr = r.get("total_return_pct", 0)
