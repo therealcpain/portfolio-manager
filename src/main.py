@@ -13,6 +13,9 @@ Usage:
   python src/main.py --committee --live  # Run live committee session (requires ANTHROPIC_API_KEY)
   python src/main.py --committee --type crypto_change --question "Should we increase MSTR?"
   python src/main.py --sessions          # List recent committee sessions
+  python src/main.py --daily             # Run 10-phase daily operating loop (mock)
+  python src/main.py --daily --live      # Run daily loop with live Claude API
+  python src/main.py --daily-history     # List recent daily loop results
 """
 
 from __future__ import annotations
@@ -358,6 +361,106 @@ def print_quick_ref(console) -> None:
     console.print(Panel(content, title="Quick Reference", border_style="dim"))
 
 
+def run_daily_loop_cmd(console, live: bool = False) -> None:
+    """Run the 10-phase daily operating loop and print a summary."""
+    from rich.table import Table
+    from rich.panel import Panel
+    from daily_loop import run_daily_loop, DailyLoopConfig
+
+    console.print("\n[bold cyan]── Daily Operating Loop ──────────────────────────────────[/bold cyan]")
+    console.print("[dim]Running 10 phases: ingest → regime → routing → memos → dissent → "
+                  "construction → CIO → learning → org → report[/dim]\n")
+
+    cfg = DailyLoopConfig(mock=not live, verbose=True)
+    result = run_daily_loop(cfg)
+
+    # Phase timing table
+    table = Table(title="Phase Results", show_header=True, header_style="bold magenta")
+    table.add_column("Phase", style="cyan", width=28)
+    table.add_column("Status", width=8)
+    table.add_column("Time", width=8)
+    table.add_column("Notes", width=50)
+
+    STATUS_COLOR = {"ok": "green", "skipped": "dim", "error": "red"}
+    STATUS_ICON = {"ok": "✓", "skipped": "⊖", "error": "✗"}
+    for pr in result.phase_results:
+        color = STATUS_COLOR.get(pr.status, "white")
+        icon = STATUS_ICON.get(pr.status, "?")
+        note = pr.error[:48] if pr.error else ""
+        table.add_row(
+            pr.phase,
+            f"[{color}]{icon} {pr.status}[/{color}]",
+            f"{pr.elapsed_s:.3f}s",
+            f"[dim]{note}[/dim]",
+        )
+    console.print(table)
+
+    # Summary panel
+    regime = result.regime
+    cio = result.cio_decision
+    regime_str = regime.macro_regime if regime else "unknown"
+    stance_str = f"{cio.final_stance} ({cio.final_confidence}%)" if cio else "unknown"
+    failed_n = len(result.phases_failed())
+
+    content_lines = [
+        f"Run ID:      {result.run_id}",
+        f"Regime:      {regime_str}",
+        f"CIO Stance:  {stance_str}",
+        f"Phases OK:   {len(result.phases_ok())}/10",
+        f"Errors:      {failed_n}",
+        f"Total time:  {result.total_elapsed_s:.3f}s",
+    ]
+    if result.final_report:
+        content_lines.append(f"Report:      {result.final_report.report_path}")
+
+    status_color = "green" if failed_n == 0 else "yellow" if failed_n <= 2 else "red"
+    console.print(Panel(
+        "\n".join(content_lines),
+        title="Daily Loop Summary",
+        border_style=status_color,
+    ))
+
+    if result.dissent and result.dissent.groupthink_alert:
+        console.print(f"[bold yellow]⚠ GROUPTHINK ALERT: {result.dissent.groupthink_reason}[/bold yellow]")
+
+    if result.org_review and result.org_review.complexity_breach:
+        console.print("[bold yellow]⚠ COMPLEXITY BREACH — review org_review recommendations[/bold yellow]")
+
+    console.print(f"\n[bold green]✓ Daily loop complete — {cfg.resolved_date()}[/bold green]")
+
+
+def run_daily_loop_history(console) -> None:
+    """List recent daily loop results."""
+    from rich.table import Table
+    from daily_loop import list_daily_results
+
+    results = list_daily_results(limit=20)
+    if not results:
+        console.print("[dim]No daily loop results found.[/dim]")
+        return
+
+    table = Table(title="Recent Daily Loops", show_header=True, header_style="bold magenta")
+    table.add_column("Date", style="cyan", width=12)
+    table.add_column("Run ID", width=22)
+    table.add_column("Regime", width=24)
+    table.add_column("CIO Stance", width=16)
+    table.add_column("OK/Total", width=10)
+    table.add_column("Time (s)", width=10)
+
+    for r in results:
+        phases_ok = len(r.get("phases_ok", []))
+        total = phases_ok + len(r.get("phases_failed", []))
+        table.add_row(
+            r.get("date", "?"),
+            r.get("run_id", "?")[-16:],
+            r.get("macro_regime", "?"),
+            r.get("cio_stance", "?"),
+            f"{phases_ok}/{total}",
+            f"{r.get('total_elapsed_s', 0):.2f}",
+        )
+    console.print(table)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Hedge Fund OS — Advisory Investment Committee")
     parser.add_argument("--sim-only", action="store_true", help="Simulation + charts only")
@@ -375,12 +478,27 @@ def main():
                         default="Evaluate current portfolio positioning and recommend any adjustments.",
                         help="Decision question for committee session")
     parser.add_argument("--sessions", action="store_true", help="List recent committee sessions")
+    # Daily loop flags
+    parser.add_argument("--daily", action="store_true",
+                        help="Run 10-phase daily operating loop")
+    parser.add_argument("--daily-history", action="store_true",
+                        help="List recent daily loop results")
     args = parser.parse_args()
 
     console = _console()
     _print_header(console)
 
     sim_results = {}
+
+    # ── Daily operating loop ─────────────────────────────
+    if args.daily:
+        run_daily_loop_cmd(console, live=args.live)
+        return
+
+    # ── Daily loop history ───────────────────────────────
+    if args.daily_history:
+        run_daily_loop_history(console)
+        return
 
     # ── Committee session ────────────────────────────────
     if args.committee:
