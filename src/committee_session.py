@@ -194,9 +194,15 @@ def _call_agent_live(agent: str, context_packet: str) -> str:
         client = anthropic.Anthropic(api_key=api_key)
         system_prompt = _load_agent_prompt(agent)
 
+        _AGENT_MODELS = {
+            "cio": "claude-sonnet-4-6",
+            "research_coordinator": "claude-sonnet-4-6",
+        }
+        model = _AGENT_MODELS.get(agent, "claude-haiku-4-5-20251001")
+
         response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=1024,
+            model=model,
+            max_tokens=512 if model.startswith("claude-haiku") else 1024,
             system=system_prompt,
             messages=[{"role": "user", "content": context_packet}],
         )
