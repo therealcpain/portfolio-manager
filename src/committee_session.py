@@ -194,9 +194,9 @@ def _call_agent_live(agent: str, context_packet: str) -> str:
         client = anthropic.Anthropic(api_key=api_key)
         system_prompt = _load_agent_prompt(agent)
 
+        # CIO gets Sonnet; all specialists and coordinators get Haiku
         _AGENT_MODELS = {
             "cio": "claude-sonnet-4-6",
-            "research_coordinator": "claude-sonnet-4-6",
         }
         model = _AGENT_MODELS.get(agent, "claude-haiku-4-5-20251001")
 
