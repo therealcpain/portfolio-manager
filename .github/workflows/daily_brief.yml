@@ -7,6 +7,9 @@ on:
     - cron: '30 13 * * 1-5'
   workflow_dispatch:  # allows manual trigger from GitHub UI
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   daily-brief:
     runs-on: ubuntu-latest
@@ -14,10 +17,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5.6.0
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -25,17 +28,13 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Write .env from secrets
-        run: |
-          cat > .env << EOF
-          FRED_API_KEY=${{ secrets.FRED_API_KEY }}
-          ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
-          GMAIL_USER=${{ secrets.GMAIL_USER }}
-          GMAIL_APP_PASSWORD=${{ secrets.GMAIL_APP_PASSWORD }}
-          REPORT_EMAIL_TO=${{ secrets.REPORT_EMAIL_TO }}
-          EOF
-
       - name: Run daily loop
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          REPORT_EMAIL_TO: ${{ secrets.REPORT_EMAIL_TO }}
         run: |
           python -c "
           import sys
@@ -53,7 +52,7 @@ jobs:
 
       - name: Upload PDF artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: daily-brief-${{ github.run_id }}
           path: reports/daily/*.pdf
