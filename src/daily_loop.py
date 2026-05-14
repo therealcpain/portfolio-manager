@@ -903,7 +903,9 @@ def _run_cio_decision(
         else:
             cio._allocation_snapshot = None
             cio._allocation_deltas = []
-    except Exception:
+    except Exception as _alloc_exc:
+        if cfg.verbose:
+            print(f"  [AllocationTracker] Parse failed: {_alloc_exc}")
         cio._allocation_snapshot = None
         cio._allocation_deltas = []
 
