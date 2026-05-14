@@ -200,9 +200,17 @@ def _call_agent_live(agent: str, context_packet: str) -> str:
         }
         model = _AGENT_MODELS.get(agent, "claude-haiku-4-5-20251001")
 
+        # CIO needs more tokens: allocation table + metadata + challenge questions
+        if agent == "cio":
+            max_tok = 2048
+        elif model.startswith("claude-haiku"):
+            max_tok = 512
+        else:
+            max_tok = 1024
+
         response = client.messages.create(
             model=model,
-            max_tokens=512 if model.startswith("claude-haiku") else 1024,
+            max_tokens=max_tok,
             system=system_prompt,
             messages=[{"role": "user", "content": context_packet}],
         )

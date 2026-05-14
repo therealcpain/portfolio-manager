@@ -344,14 +344,29 @@ Date: {datetime.now().strftime('%Y-%m-%d')}
 - Portfolio constraints: Article VII
 
 ## CIO Required Output
+
+Your response MUST begin with the TARGET ALLOCATION block in exactly this format:
+
+TARGET ALLOCATION
+```
+TICKER | TARGET_PCT | ACTION    | CONFIDENCE | ONE-LINE REASON
+SPY    | 20%        | HOLD      | 72%        | Broad equity core, macro tailwind intact
+CASH   | 38%        | HOLD      | —          | Dry powder, no high-conviction entry
+```
+
+Include every position currently held plus CASH. Total must sum to 100%.
+Actions: ADD / TRIM / HOLD / EXIT / INITIATE
+
+Then provide the metadata fields:
 ```
 FINAL_STANCE: [Bullish / Bearish / Neutral / Hold / Trim / Wait / No Action]
 FINAL_CONFIDENCE: [integer 1–100]
 ALLOCATION_CHANGE: [Yes/No]
-ALLOCATION_DETAIL: [If Yes: specific changes with $ amounts and % of portfolio]
-ACTION_ORDERS: [List of specific actions, or "Hold all positions"]
-DISSENT_ACKNOWLEDGED: [Yes/No — confirm dissenting views were considered]
-CHALLENGE_QUESTIONS: [2–3 questions the CIO is asking itself before committing]
-NEXT_REVIEW_TRIGGER: [What specific event would trigger early re-evaluation]
+DISSENT_ACKNOWLEDGED: [Yes/No]
+CHALLENGE_QUESTIONS:
+- [question 1]
+- [question 2]
+- [question 3]
+NEXT_REVIEW_TRIGGER: [specific event, not a date]
 ```
 """
