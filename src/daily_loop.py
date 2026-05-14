@@ -900,7 +900,11 @@ def _run_cio_decision(
             save_snapshot(alloc_snap)
             cio._allocation_snapshot = alloc_snap
             cio._allocation_deltas = compute_deltas(alloc_snap)
+            if cfg.verbose:
+                print(f"  [AllocationTracker] Parsed {len(alloc_snap.positions)} positions")
         else:
+            if cfg.verbose:
+                print("  [AllocationTracker] No allocation table found in CIO output")
             cio._allocation_snapshot = None
             cio._allocation_deltas = []
     except Exception as _alloc_exc:

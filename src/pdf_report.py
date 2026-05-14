@@ -231,7 +231,7 @@ def generate_pdf(result, output_path=None) -> Path:
         story.append(P(f"Portfolio confidence: {conf}/100", conf_style))
 
     else:
-        story.append(P("No allocation parsed from CIO output — run with mock=False.", "small"))
+        story.append(P("Allocation table not available — CIO output did not contain a parseable TARGET ALLOCATION block.", "small"))
 
     story += [SP(8), HR()]
 
@@ -336,9 +336,9 @@ def generate_pdf(result, output_path=None) -> Path:
                 story.append(P(f"  • {pt}", "body"))
     else:
         story.append(P(
-            "Bear case memo not available in this run. In live mode, the bear_case_analyst "
-            "and risk_officer specialists provide the contrarian stress-test view — what the portfolio "
-            "should look like if the dominant thesis is wrong (more cash, less beta, gold over equities).",
+            "Bear case memo not available — the bear_case_analyst and risk_officer specialists "
+            "did not return a parseable memo in this run. Their contrarian view covers what the "
+            "portfolio should look like if the dominant thesis is wrong: more cash, less beta, gold over equities.",
             "body"
         ))
 
