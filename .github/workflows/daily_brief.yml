@@ -14,6 +14,12 @@ jobs:
   daily-brief:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GMAIL_USER: ${{ secrets.GMAIL_USER }}
+      GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+      REPORT_EMAIL_TO: ${{ secrets.REPORT_EMAIL_TO }}
 
     steps:
       - name: Checkout repo
@@ -29,9 +35,6 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Verify secrets are set
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: |
           echo "ANTHROPIC_API_KEY length: ${#ANTHROPIC_API_KEY}"
           echo "FRED_API_KEY length: ${#FRED_API_KEY}"
@@ -40,12 +43,6 @@ jobs:
           echo "Secrets OK"
 
       - name: Run daily loop
-        env:
-          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GMAIL_USER: ${{ secrets.GMAIL_USER }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          REPORT_EMAIL_TO: ${{ secrets.REPORT_EMAIL_TO }}
         run: |
           python -c "
           import sys
