@@ -139,28 +139,9 @@ def generate_pdf(result, output_path=None) -> Path:
     regime_label = regime_res.macro_regime.replace("_", " ") if regime_res else "UNKNOWN"
     regime_conf  = regime_res.macro_confidence if regime_res else 0
 
-    # Regime stability line
-    if regime_stab:
-        stab_label = regime_stab.status_label
-        if regime_stab.pending_flip:
-            stab_color = _AMBER
-        elif regime_stab.days_at_regime >= 10:
-            stab_color = _NEON
-        else:
-            stab_color = _MUTED
-    else:
-        stab_label = "Day 1"
-        stab_color = _MUTED
-
-    # Regime banner — two rows: regime name large, stability line below
-    S["regime_big"] = sty("rb", size=14, color=_FLASH, bold=True, align=TA_CENTER, leading=18)
-    S["regime_stab"] = sty("rs", size=8.5, color=stab_color, align=TA_CENTER, leading=12)
-
     hdr_data = [
         [P("PORTFOLIO BRIEF", "h1")],
-        [P(f"<b>{regime_label}</b>  ·  {regime_conf}% confidence", "regime_big")],
-        [P(stab_label, "regime_stab")],
-        [P(f"{date_str}", "h1sub")],
+        [P(f"{date_str}  ·  {regime_label}  ·  {regime_conf}% regime confidence", "h1sub")],
     ]
     hdr = Table(hdr_data, colWidths=[W])
     hdr.setStyle(TableStyle([
@@ -194,24 +175,11 @@ def generate_pdf(result, output_path=None) -> Path:
             s = f"+{v:.1f}pp" if v > 0 else f"{v:.1f}pp"
             return P(s, "green" if v > 0 else "red")
 
-        _REBALANCE_THRESHOLD_PCT = 5.0  # only flag action if drift exceeds this
-
         for d in alloc_deltas:
             action = d.action.upper()
-            # Suppress action if all deltas are within tolerance (no drift data yet is OK)
-            max_drift = max(
-                abs(v) for v in [d.delta_1d, d.delta_1w, d.delta_1m] if v is not None
-            ) if any(v is not None for v in [d.delta_1d, d.delta_1w, d.delta_1m]) else 0
-            if action not in ("EXIT", "INITIATE") and max_drift < _REBALANCE_THRESHOLD_PCT and action not in ("ADD", "TRIM", "RAISE", "REDUCE"):
-                display_action = "HOLD"
-                act_style = "body"
-            elif action not in ("EXIT", "INITIATE") and max_drift < _REBALANCE_THRESHOLD_PCT and action in ("ADD", "TRIM", "RAISE", "REDUCE"):
-                display_action = f"HOLD*"   # CIO wanted action but drift < 5% threshold
-                act_style = "small"
-            else:
-                display_action = action
-                act_style = ("green" if action in ("ADD","INITIATE","RAISE")
-                             else "red" if action in ("TRIM","EXIT","REDUCE") else "body")
+            display_action = action
+            act_style = ("green" if action in ("ADD","INITIATE","RAISE")
+                         else "red" if action in ("TRIM","EXIT","REDUCE") else "body")
             # Normalize cash label
             label = "CASH / STRC" if d.ticker in ("CASH", "STRC") else d.ticker
             rows.append([
@@ -251,8 +219,8 @@ def generate_pdf(result, output_path=None) -> Path:
         # Legend
         story.append(P(
             "ADD = increase  ·  TRIM = reduce  ·  HOLD = no change  ·  "
-            "EXIT = close position  ·  INITIATE = new  ·  HOLD* = CIO wanted action but drift <5% (within tolerance)  ·  "
-            "pp = percentage points vs prior period",
+            "EXIT = close position  ·  INITIATE = new  ·  "
+            "pp = percentage points vs prior day",
             "small"
         ))
         story.append(SP(4))
@@ -407,11 +375,16 @@ def generate_pdf(result, output_path=None) -> Path:
 
     # ── Section 6: Macro context (portfolio-relevant only) ───────────────────
     story.append(sec("MACRO CONTEXT"))
+    equity_stance = regime_res.equity_stance if regime_res else "—"
     story.append(P(
         f"Regime: <b>{regime_label}</b>  ({regime_conf}% confidence)  ·  "
-        f"Equity stance: {regime_res.equity_stance if regime_res else '—'}",
+        f"Equity stance: {equity_stance}",
         "body"
     ))
+    if regime_stab:
+        stab_color = _AMBER if regime_stab.pending_flip else (_NEON if regime_stab.days_at_regime >= 10 else _MUTED)
+        S["stab_inline"] = sty("si", size=8, color=stab_color)
+        story.append(P(regime_stab.status_label, "stab_inline"))
     story.append(SP(4))
 
     # Only show macro signals that are portfolio-relevant
