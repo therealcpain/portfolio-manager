@@ -36,6 +36,10 @@ jobs:
 
       - name: Verify secrets are set
         run: |
+          echo "=== Expression-level check ==="
+          echo "ANTHROPIC_API_KEY has value: ${{ secrets.ANTHROPIC_API_KEY != '' }}"
+          echo "FRED_API_KEY has value: ${{ secrets.FRED_API_KEY != '' }}"
+          echo "=== Shell env-level check ==="
           echo "ANTHROPIC_API_KEY length: ${#ANTHROPIC_API_KEY}"
           echo "FRED_API_KEY length: ${#FRED_API_KEY}"
           if [ -z "$ANTHROPIC_API_KEY" ]; then echo "ERROR: ANTHROPIC_API_KEY is empty"; exit 1; fi
