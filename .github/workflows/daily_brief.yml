@@ -28,6 +28,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Verify secrets are set
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          echo "ANTHROPIC_API_KEY length: ${#ANTHROPIC_API_KEY}"
+          echo "FRED_API_KEY length: ${#FRED_API_KEY}"
+          if [ -z "$ANTHROPIC_API_KEY" ]; then echo "ERROR: ANTHROPIC_API_KEY is empty"; exit 1; fi
+          if [ -z "$FRED_API_KEY" ]; then echo "ERROR: FRED_API_KEY is empty"; exit 1; fi
+          echo "Secrets OK"
+
       - name: Run daily loop
         env:
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
