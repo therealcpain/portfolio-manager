@@ -656,8 +656,7 @@ def _run_memos(cfg: DailyLoopConfig, routing: RoutingResult, ingest: IngestResul
                 "confidence": memo.confidence,
                 "key_points": memo.key_points,
                 "recommendation": memo.recommendation,
-                "dissent": memo.dissent,
-                "timestamp": memo.timestamp,
+                "dissent": memo.dissent_reason,
             })
         except Exception as exc:
             memos.append({
@@ -884,6 +883,8 @@ def _run_cio_decision(
             routing_rationale=getattr(pc, "routing_rationale", "Full committee engaged."),
         )
         raw = _call_agent_live("cio", cio_brief)
+        if cfg.verbose:
+            print(f"  [CIO raw output preview]:\n{raw[:600]}")
 
     cio = _parse_cio_decision(raw)
 
@@ -935,7 +936,7 @@ def _run_cio_decision(
         if "watch" in desc or "monitor" in desc:
             watchlist.append(s["source"] + ": " + s.get("description", ""))
 
-    return CIODecisionResult(
+    cio_result = CIODecisionResult(
         final_stance=cio.final_stance,
         final_confidence=cio.final_confidence,
         required_actions=required,
@@ -947,6 +948,10 @@ def _run_cio_decision(
         next_review_trigger=cio.next_review_trigger,
         allocation_change=cio.allocation_change,
     )
+    # Transfer allocation attributes to the new result object
+    cio_result._allocation_snapshot = getattr(cio, "_allocation_snapshot", None)
+    cio_result._allocation_deltas   = getattr(cio, "_allocation_deltas",   [])
+    return cio_result
 
 
 # ---------------------------------------------------------------------------
@@ -1585,21 +1590,22 @@ def run_daily_loop(cfg: Optional[DailyLoopConfig] = None) -> DailyLoopResult:
     except Exception:
         result._regime_stability = None
 
-    # Auto-generate PDF alongside the text report
-    if not cfg.mock:
-        try:
-            from pdf_report import generate_pdf
-            pdf_path = generate_pdf(result)
-            if cfg.verbose:
-                print(f"  PDF: {pdf_path}")
-            # Email the brief
+    # Auto-generate PDF (always — mock or live)
+    try:
+        from pdf_report import generate_pdf
+        pdf_path = generate_pdf(result)
+        if cfg.verbose:
+            print(f"  PDF: {pdf_path}")
+        # Email only on live runs
+        if not cfg.mock:
             try:
                 from mailer import send_daily_brief
                 send_daily_brief(pdf_path, date_str=cfg.resolved_date())
             except Exception as mail_exc:
                 if cfg.verbose:
                     print(f"  [Mailer] Failed: {mail_exc}")
-        except Exception:
-            pass
+    except Exception as pdf_exc:
+        if cfg.verbose:
+            print(f"  [PDF] Generation failed: {pdf_exc}")
 
     return result
